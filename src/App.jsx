@@ -19,6 +19,7 @@ import ScreenTimeCapsule from './components/ScreenTimeCapsule';
 import ScreenPricing from './components/ScreenPricing';
 import ScreenDispatch from './components/ScreenDispatch';
 import { AvatarProfileModal } from './components/SharedUI';
+import SupabaseConfigModal from './components/SupabaseConfigModal';
 import { soundEngine } from './utils/soundEngine';
 import {
   loadLocalCache,
@@ -26,7 +27,9 @@ import {
   pushBackendState,
   loadSessionUser,
   saveSessionUser,
+  subscribeToRealtimeSync,
 } from './utils/apiClient';
+import { hasSupabaseConfig } from './utils/supabaseClient';
 
 export default function App() {
   const cached = loadLocalCache();
@@ -34,6 +37,8 @@ export default function App() {
   const [accounts, setAccounts] = useState(() => cached?.accounts || INITIAL_ACCOUNTS);
   const [user, setUser] = useState(() => loadSessionUser());
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSupabaseModal, setShowSupabaseModal] = useState(false);
+  const [isSupabaseConnected, setIsSupabaseConnected] = useState(() => hasSupabaseConfig());
 
   const [activeScreen, setActiveScreen] = useState('feed');
   const [searchQuery, setSearchQuery] = useState('');
@@ -122,6 +127,23 @@ export default function App() {
   useEffect(() => {
     saveSessionUser(user);
   }, [user]);
+
+  // 4. Supabase Realtime Subscription (Syncs state instantly across multiple devices)
+  useEffect(() => {
+    const unsubscribe = subscribeToRealtimeSync((remote) => {
+      if (!remote) return;
+      if (remote.accounts) setAccounts(remote.accounts);
+      if (remote.posts) setPosts(remote.posts);
+      if (remote.vaultItems) setVaultItems(remote.vaultItems);
+      if (remote.capsules) setCapsules(remote.capsules);
+      if (remote.reminders) setReminders(remote.reminders);
+      if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
+      setSyncStatus('synced');
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [isSupabaseConnected]);
 
   const handleLoginSuccess = (acc) => {
     soundEngine.stop();
@@ -357,6 +379,8 @@ export default function App() {
           soundEngine.stop();
           setActiveScreen(scr);
         }}
+        onOpenSupabaseConfig={() => setShowSupabaseModal(true)}
+        isSupabaseConnected={isSupabaseConnected}
       />
 
       <div className="max-w-[1440px] w-full mx-auto px-4 lg:px-6 pt-6 flex gap-6 flex-1">
@@ -447,7 +471,9 @@ export default function App() {
         ) : syncStatus === 'synced' ? (
           <>
             <Cloud className="w-3.5 h-3.5 text-[#3B7A57]" />
-            <span className="text-[#3B7A57] font-semibold">Đã đồng bộ Backend API</span>
+            <span className="text-[#3B7A57] font-semibold">
+              {isSupabaseConnected ? 'Đã đồng bộ Supabase Cloud' : 'Đã đồng bộ Backend API'}
+            </span>
           </>
         ) : (
           <>
@@ -462,6 +488,29 @@ export default function App() {
           user={user}
           onSaveProfile={handleSaveProfile}
           onClose={() => setShowProfileModal(false)}
+        />
+      )}
+
+      {showSupabaseModal && (
+        <SupabaseConfigModal
+          isOpen={showSupabaseModal}
+          onClose={() => setShowSupabaseModal(false)}
+          showToast={showToast}
+          onConnected={() => {
+            setIsSupabaseConnected(hasSupabaseConfig());
+            fetchBackendState()
+              .then((remote) => {
+                if (remote) {
+                  if (remote.accounts) setAccounts(remote.accounts);
+                  if (remote.posts) setPosts(remote.posts);
+                  if (remote.vaultItems) setVaultItems(remote.vaultItems);
+                  if (remote.capsules) setCapsules(remote.capsules);
+                  if (remote.reminders) setReminders(remote.reminders);
+                  if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
+                }
+              })
+              .catch(() => {});
+          }}
         />
       )}
 

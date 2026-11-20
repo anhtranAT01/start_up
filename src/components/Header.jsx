@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Briefcase,
   Camera,
+  Database,
 } from 'lucide-react';
 import { SafeImage } from './SharedUI';
 
@@ -27,6 +28,8 @@ export default function Header({
   remindersCount,
   notifications,
   onNavigate,
+  onOpenSupabaseConfig,
+  isSupabaseConnected,
 }) {
   const [showNotif, setShowNotif] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -87,6 +90,28 @@ export default function Header({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          {/* Supabase Cloud DB Connection Button */}
+          <button
+            onClick={onOpenSupabaseConfig}
+            className={`relative w-10 h-10 rounded-full border flex items-center justify-center transition-colors ${
+              isSupabaseConnected
+                ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#22774F] hover:bg-[#3ECF8E]/25'
+                : 'bg-[#FAF6F0] border-[#E6DEC8] text-[#7C4D2B] hover:bg-[#F3E9D8]'
+            }`}
+            title={
+              isSupabaseConnected
+                ? 'Cơ sở dữ liệu Supabase: Đang kết nối vĩnh viễn trên đám mây'
+                : 'Kết nối Cơ sở dữ liệu Supabase đám mây'
+            }
+          >
+            <Database className="w-4 h-4" />
+            <span
+              className={`absolute top-1 right-1 w-2 h-2 rounded-full ${
+                isSupabaseConnected ? 'bg-[#3ECF8E]' : 'bg-[#E5A93C]'
+              }`}
+            />
+          </button>
+
           {/* Notification Bell */}
           <div className="relative">
             <button
@@ -226,6 +251,16 @@ export default function Header({
                   >
                     <Camera className="w-3.5 h-3.5" />
                     <span>Đổi ảnh đại diện & Hồ sơ</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowAccountMenu(false);
+                      onOpenSupabaseConfig && onOpenSupabaseConfig();
+                    }}
+                    className="w-full py-2 rounded-xl bg-[#3ECF8E]/10 hover:bg-[#3ECF8E]/20 text-xs font-semibold text-[#22774F] flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <Database className="w-3.5 h-3.5" />
+                    <span>Cấu hình Supabase Cloud</span>
                   </button>
                   {!isAdmin && (
                     <button

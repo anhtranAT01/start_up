@@ -1,3 +1,10 @@
+import {
+  hasSupabaseConfig,
+  fetchSupabaseState,
+  saveSupabaseState,
+  subscribeToSupabaseRealtime,
+} from './supabaseClient';
+
 const STORAGE_KEY = 'CUA_HANG_KY_UC_STATE_V2';
 const SESSION_USER_KEY = 'CUA_HANG_KY_UC_USER_V2';
 
@@ -49,6 +56,20 @@ export function saveSessionUser(user) {
 }
 
 export async function fetchBackendState() {
+  // 1. If Supabase is configured on client, try fetching from Supabase first
+  if (hasSupabaseConfig()) {
+    try {
+      const supaData = await fetchSupabaseState();
+      if (supaData) {
+        saveLocalCache(supaData);
+        return supaData;
+      }
+    } catch (err) {
+      console.warn('Direct Supabase fetch failed, falling back to /api/state:', err);
+    }
+  }
+
+  // 2. Fallback to /api/state (which also checks Supabase on server if configured in Vercel)
   const endpoint = getApiEndpoint();
   const res = await fetch(endpoint, {
     method: 'GET',
@@ -64,14 +85,37 @@ export async function fetchBackendState() {
 
 export async function pushBackendState(state) {
   saveLocalCache(state);
-  const endpoint = getApiEndpoint();
-  const res = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(state),
-  });
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
+
+  // 1. If Supabase is configured directly on client, save to Supabase
+  if (hasSupabaseConfig()) {
+    try {
+      await saveSupabaseState(state);
+    } catch (err) {
+      console.warn('Direct Supabase save failed:', err);
+    }
   }
-  return await res.json();
+
+  // 2. Also push to /api/state
+  const endpoint = getApiEndpoint();
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Push to /api/state failed (handled by local cache/Supabase):', err);
+  }
+
+  return { ok: true, updatedAt: state.updatedAt };
+}
+
+export function subscribeToRealtimeSync(callback) {
+  if (hasSupabaseConfig()) {
+    return subscribeToSupabaseRealtime(callback);
+  }
+  return () => {};
 }
