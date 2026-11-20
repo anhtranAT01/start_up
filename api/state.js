@@ -21,7 +21,8 @@ function getSeed() {
     capsules: INITIAL_TIME_CAPSULES,
     reminders: INITIAL_REMINDERS,
     dispatchOrders: INITIAL_DISPATCH_ORDERS,
-    updatedAt: new Date().toISOString(),
+    isSeed: true,
+    updatedAt: '2026-01-01T00:00:00.000Z',
   };
 }
 
@@ -40,7 +41,7 @@ function loadState() {
 }
 
 function saveState(nextState) {
-  const payload = { ...nextState, updatedAt: new Date().toISOString() };
+  const payload = { ...nextState, isSeed: false, updatedAt: new Date().toISOString() };
   memoryStore = payload;
   try {
     fs.writeFileSync(TMP_DB, JSON.stringify(payload), 'utf-8');

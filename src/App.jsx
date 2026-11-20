@@ -57,15 +57,22 @@ export default function App() {
     }, 3600);
   }, []);
 
-  // 1. Fetch state from Backend API on mount
+  // 1. Fetch state from Backend API on mount without letting a cold-started seed overwrite local changes
   useEffect(() => {
     let mounted = true;
     fetchBackendState()
       .then((remote) => {
         if (!mounted || !remote) return;
         const local = loadLocalCache();
-        // If local cache does not exist yet, hydrate from backend
-        if (!local || (remote.updatedAt && (!local.updatedAt || remote.updatedAt >= local.updatedAt))) {
+
+        // If backend cold-started to default seed, but local browser has newer user data, push local data back to backend!
+        if (remote.isSeed && local && !local.isSeed && local.updatedAt > remote.updatedAt) {
+          pushBackendState(local).catch(() => {});
+          setSyncStatus('synced');
+          return;
+        }
+
+        if (!local || (!remote.isSeed && remote.updatedAt && (!local.updatedAt || remote.updatedAt >= local.updatedAt))) {
           if (remote.accounts) setAccounts(remote.accounts);
           if (remote.posts) setPosts(remote.posts);
           if (remote.vaultItems) setVaultItems(remote.vaultItems);
@@ -97,6 +104,7 @@ export default function App() {
       capsules,
       reminders,
       dispatchOrders,
+      isSeed: false,
       updatedAt: new Date().toISOString(),
     };
 
