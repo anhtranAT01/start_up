@@ -1,9 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get Supabase credentials from Vite environment or localStorage override
+// Get Supabase credentials from Vite environment (supports VITE_, NEXT_PUBLIC_, SUPABASE_) or localStorage override
 export function getSupabaseCredentials() {
-  const envUrl = import.meta.env.VITE_SUPABASE_URL;
-  const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const envUrl =
+    import.meta.env.VITE_SUPABASE_URL ||
+    import.meta.env.NEXT_PUBLIC_SUPABASE_URL ||
+    import.meta.env.SUPABASE_URL;
+
+  const envKey =
+    import.meta.env.VITE_SUPABASE_ANON_KEY ||
+    import.meta.env.SUPABASE_ANON_KEY ||
+    import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let localUrl = '';
   let localKey = '';

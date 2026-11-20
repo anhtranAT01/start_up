@@ -99,6 +99,7 @@ function localBackendPlugin() {
 
 export default defineConfig({
   plugins: [react(), localBackendPlugin()],
+  envPrefix: ['VITE_', 'NEXT_PUBLIC_', 'SUPABASE_'],
   build: {
     outDir: 'dist',
   },
