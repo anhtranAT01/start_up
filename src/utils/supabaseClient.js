@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get Supabase credentials from Vite environment (supports VITE_, NEXT_PUBLIC_, SUPABASE_) or localStorage override
+// Get Supabase credentials from Vite environment or localStorage override
 export function getSupabaseCredentials() {
   const envUrl =
     import.meta.env.VITE_SUPABASE_URL ||
@@ -81,7 +81,6 @@ export async function fetchSupabaseState() {
     .maybeSingle();
 
   if (error) {
-    console.warn('Supabase fetch error (table may need schema setup):', error.message);
     throw error;
   }
 
@@ -120,43 +119,8 @@ export async function saveSupabaseState(state) {
   );
 
   if (error) {
-    console.error('Supabase upsert error:', error.message);
     throw error;
   }
 
   return payloadToSave;
-}
-
-/**
- * Subscribe to realtime updates on 'app_state'
- */
-export function subscribeToSupabaseRealtime(onUpdate) {
-  const supabase = getSupabaseClient();
-  if (!supabase) return () => {};
-
-  try {
-    const channel = supabase
-      .channel('app_state_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'app_state', filter: 'id=eq.main' },
-        (payload) => {
-          if (payload.new && payload.new.payload) {
-            onUpdate({
-              ...payload.new.payload,
-              isSeed: false,
-              updatedAt: payload.new.updated_at || payload.new.payload.updatedAt,
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  } catch (err) {
-    console.warn('Could not establish Supabase realtime channel:', err);
-    return () => {};
-  }
 }

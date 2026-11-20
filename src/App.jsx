@@ -27,7 +27,6 @@ import {
   pushBackendState,
   loadSessionUser,
   saveSessionUser,
-  subscribeToRealtimeSync,
 } from './utils/apiClient';
 import { hasSupabaseConfig } from './utils/supabaseClient';
 
@@ -55,7 +54,6 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const isInitialMount = useRef(true);
   const isRemoteUpdate = useRef(false);
-  const lastPushedSignature = useRef('');
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type, id: Date.now() });
@@ -64,7 +62,7 @@ export default function App() {
     }, 3600);
   }, []);
 
-  // 1. Fetch state from Backend API on mount without letting a cold-started seed overwrite local changes
+  // 1. Fetch state from Backend API on mount safely
   useEffect(() => {
     let mounted = true;
     fetchBackendState()
@@ -72,14 +70,20 @@ export default function App() {
         if (!mounted || !remote) return;
         const local = loadLocalCache();
 
-        // If backend cold-started to default seed, but local browser has newer user data, push local data back to backend!
-        if (remote.isSeed && local && !local.isSeed && local.updatedAt > remote.updatedAt) {
-          pushBackendState(local).catch(() => {});
+        // If local browser has user modifications, preserve them
+        if (local && !local.isSeed && local.updatedAt && remote.updatedAt && local.updatedAt >= remote.updatedAt) {
           setSyncStatus('synced');
           return;
         }
 
-        if (!local || (!remote.isSeed && remote.updatedAt && (!local.updatedAt || remote.updatedAt >= local.updatedAt))) {
+        // If backend cold-started with seed but local has user data, preserve local
+        if (remote.isSeed && local && !local.isSeed) {
+          pushBackendState(local);
+          setSyncStatus('synced');
+          return;
+        }
+
+        if (remote.updatedAt && (!local?.updatedAt || remote.updatedAt > local.updatedAt)) {
           isRemoteUpdate.current = true;
           if (remote.accounts) setAccounts(remote.accounts);
           if (remote.posts) setPosts(remote.posts);
@@ -87,6 +91,7 @@ export default function App() {
           if (remote.capsules) setCapsules(remote.capsules);
           if (remote.reminders) setReminders(remote.reminders);
           if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
+          saveLocalCache(remote);
         }
         setSyncStatus('synced');
       })
@@ -98,7 +103,7 @@ export default function App() {
     };
   }, []);
 
-  // 2. Push state changes to Backend API + localStorage automatically
+  // 2. Automatically sync state changes to localStorage (instantly) and backend (debounced)
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -109,20 +114,6 @@ export default function App() {
       isRemoteUpdate.current = false;
       return;
     }
-
-    const currentSig = JSON.stringify({
-      accs: accounts.map((a) => `${a.id}:${a.name}:${a.role}`),
-      psts: posts.map((p) => `${p.id}:${p.candles}:${p.comments?.length}`),
-      vlt: vaultItems.map((v) => `${v.id}:${v.status}`),
-      caps: capsules.length,
-      rems: reminders.length,
-      orders: dispatchOrders.map((o) => `${o.id}:${o.step}`),
-    });
-
-    if (lastPushedSignature.current === currentSig) {
-      return;
-    }
-    lastPushedSignature.current = currentSig;
 
     const payload = {
       accounts,
@@ -135,48 +126,24 @@ export default function App() {
       updatedAt: new Date().toISOString(),
     };
 
+    // Instant local cache save - zero lag for user interactions
+    saveLocalCache(payload);
+
+    // Debounced background push
     setSyncStatus('syncing');
-
-    // Safety fallback: never allow syncing badge to spin longer than 1.5s
-    const safetyTimer = setTimeout(() => {
-      setSyncStatus((prev) => (prev === 'syncing' ? 'synced' : prev));
-    }, 1500);
-
-    const timer = setTimeout(() => {
-      pushBackendState(payload)
-        .then(() => setSyncStatus('synced'))
-        .catch(() => setSyncStatus('local'))
-        .finally(() => clearTimeout(safetyTimer));
-    }, 400);
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(safetyTimer);
-    };
+    pushBackendState(payload)
+      .then((res) => {
+        setSyncStatus(res?.ok ? 'synced' : 'local');
+      })
+      .catch(() => {
+        setSyncStatus('local');
+      });
   }, [accounts, posts, vaultItems, capsules, reminders, dispatchOrders]);
 
   // 3. Persist logged-in user session
   useEffect(() => {
     saveSessionUser(user);
   }, [user]);
-
-  // 4. Supabase Realtime Subscription (Syncs state instantly across multiple devices)
-  useEffect(() => {
-    const unsubscribe = subscribeToRealtimeSync((remote) => {
-      if (!remote) return;
-      isRemoteUpdate.current = true;
-      if (remote.accounts) setAccounts(remote.accounts);
-      if (remote.posts) setPosts(remote.posts);
-      if (remote.vaultItems) setVaultItems(remote.vaultItems);
-      if (remote.capsules) setCapsules(remote.capsules);
-      if (remote.reminders) setReminders(remote.reminders);
-      if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
-      setSyncStatus('synced');
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [isSupabaseConnected]);
 
   const handleLoginSuccess = (acc) => {
     soundEngine.stop();

@@ -1,10 +1,3 @@
-import {
-  hasSupabaseConfig,
-  fetchSupabaseState,
-  saveSupabaseState,
-  subscribeToSupabaseRealtime,
-} from './supabaseClient';
-
 const STORAGE_KEY = 'CUA_HANG_KY_UC_STATE_V2';
 const SESSION_USER_KEY = 'CUA_HANG_KY_UC_USER_V2';
 
@@ -30,7 +23,7 @@ export function saveLocalCache(state) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
-    // Ignore quota errors if very large base64 images
+    // Ignore quota errors if payload contains large base64 images
   }
 }
 
@@ -55,27 +48,14 @@ export function saveSessionUser(user) {
   }
 }
 
+/**
+ * Fetch remote state safely with a strict 3-second timeout.
+ * Never throws an unhandled exception or hangs the main thread.
+ */
 export async function fetchBackendState() {
-  // 1. If Supabase is configured on client, try fetching from Supabase with timeout
-  if (hasSupabaseConfig()) {
-    try {
-      const supaData = await Promise.race([
-        fetchSupabaseState(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), 3000)),
-      ]);
-      if (supaData) {
-        saveLocalCache(supaData);
-        return supaData;
-      }
-    } catch (err) {
-      console.warn('Direct Supabase fetch failed/timeout, falling back to /api/state:', err);
-    }
-  }
-
-  // 2. Fallback to /api/state with 4s timeout
   const endpoint = getApiEndpoint();
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 4000);
+  const timer = setTimeout(() => controller.abort(), 3000);
 
   try {
     const res = await fetch(endpoint, {
@@ -88,58 +68,51 @@ export async function fetchBackendState() {
       throw new Error(`HTTP ${res.status}`);
     }
     const data = await res.json();
-    saveLocalCache(data);
     return data;
   } catch (err) {
     clearTimeout(timer);
-    const local = loadLocalCache();
-    if (local) return local;
-    throw err;
+    return null;
   }
 }
 
-export async function pushBackendState(state) {
+/**
+ * Push state to the backend in the background.
+ * Immediate local save + debounced non-blocking HTTP request.
+ */
+let debounceTimer = null;
+export function pushBackendState(state) {
+  // 1. Immediately save to local storage (instant UI persistence)
   saveLocalCache(state);
 
-  // 1. If Supabase is configured directly on client, save with timeout
-  if (hasSupabaseConfig()) {
-    try {
-      await Promise.race([
-        saveSupabaseState(state),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase save timeout')), 3000)),
-      ]);
-    } catch (err) {
-      console.warn('Direct Supabase save failed:', err);
+  // 2. Debounce backend push so rapid clicks never create a network traffic jam
+  return new Promise((resolve) => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
     }
-  }
 
-  // 2. Also push to /api/state with 4s timeout
-  const endpoint = getApiEndpoint();
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 4000);
+    debounceTimer = setTimeout(async () => {
+      try {
+        const endpoint = getApiEndpoint();
+        const controller = new AbortController();
+        const abortTimeout = setTimeout(() => controller.abort(), 3500);
 
-  try {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state),
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch (err) {
-    clearTimeout(timer);
-    console.warn('Push to /api/state failed/timeout (handled by local cache):', err);
-  }
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state),
+          signal: controller.signal,
+        });
+        clearTimeout(abortTimeout);
 
-  return { ok: true, updatedAt: state.updatedAt };
-}
-
-export function subscribeToRealtimeSync(callback) {
-  if (hasSupabaseConfig()) {
-    return subscribeToSupabaseRealtime(callback);
-  }
-  return () => {};
+        if (res.ok) {
+          const result = await res.json().catch(() => ({ ok: true }));
+          resolve({ ok: true, updatedAt: state.updatedAt, ...result });
+        } else {
+          resolve({ ok: false, error: `HTTP ${res.status}` });
+        }
+      } catch (err) {
+        resolve({ ok: false, error: err.message });
+      }
+    }, 500);
+  });
 }

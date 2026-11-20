@@ -59,7 +59,7 @@ async function loadFromSupabase() {
 
     const { data, error } = await Promise.race([
       fetchPromise,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase load timeout')), 2500)),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase load timeout')), 1500)),
     ]);
 
     if (!error && data && data.payload) {
@@ -96,7 +96,7 @@ async function saveToSupabase(payload) {
 
     const { error } = await Promise.race([
       savePromise,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase save timeout')), 2500)),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase save timeout')), 1500)),
     ]);
 
     return !error;
