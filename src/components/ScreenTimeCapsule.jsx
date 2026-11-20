@@ -66,7 +66,9 @@ export default function ScreenTimeCapsule({
 
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState(
-    vaultItems[0] ? `${vaultItems[0].name} (#${vaultItems[0].id})` : 'Hộp kỷ vật #MK-1024'
+    Array.isArray(vaultItems) && vaultItems[0]
+      ? `${vaultItems[0].name} (#${vaultItems[0].id})`
+      : 'Hộp kỷ vật #MK-1024'
   );
   const [scheduleType, setScheduleType] = useState('Sau 3 năm');
   const [channels, setChannels] = useState(['Thông báo App', 'Gửi Email cổ điển']);
@@ -78,10 +80,12 @@ export default function ScreenTimeCapsule({
       showToast('Mã OTP không đúng! Vui lòng nhập 123456 để mở khóa khẩn cấp.', 'error');
       return;
     }
-    setCapsules(
-      capsules.map((c) => (c.id === otpModalCapsule.id ? { ...c, unlocked: true } : c))
+    setCapsules((prev) =>
+      (Array.isArray(prev) ? prev : []).map((c) =>
+        c.id === otpModalCapsule?.id ? { ...c, unlocked: true } : c
+      )
     );
-    showToast(`Đã mở khóa sớm Hộp Thời Gian "${otpModalCapsule.title}"!`);
+    showToast(`Đã mở khóa sớm Hộp Thời Gian "${otpModalCapsule?.title || ''}"!`);
     setOtpInput('');
     setOtpModalCapsule(null);
   };
@@ -102,7 +106,7 @@ export default function ScreenTimeCapsule({
       autoShip,
       recipients: recipients.trim() || `${user?.name || 'Chủ tài khoản'} (${user?.phone || ''})`,
     };
-    setReminders((prev) => [newRem, ...prev]);
+    setReminders((prev) => [newRem, ...(Array.isArray(prev) ? prev : [])]);
     showToast('Đã lưu Lời Nhắc & đồng bộ vào tài khoản của bạn!');
     setShowNewModal(false);
     setRecipients('');
@@ -132,7 +136,7 @@ export default function ScreenTimeCapsule({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {capsules.map((cap) => (
+          {(Array.isArray(capsules) ? capsules : []).map((cap) => (
             <div
               key={cap.id}
               className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm flex flex-col justify-between gap-4 relative overflow-hidden"
@@ -263,7 +267,7 @@ export default function ScreenTimeCapsule({
         </div>
 
         <div className="space-y-3">
-          {reminders.map((rem) => (
+          {(Array.isArray(reminders) ? reminders : []).map((rem) => (
             <div
               key={rem.id}
               className="p-4 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
@@ -355,7 +359,7 @@ export default function ScreenTimeCapsule({
                   onChange={(e) => setSelectedTarget(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]"
                 >
-                  {vaultItems.map((v) => (
+                  {(Array.isArray(vaultItems) ? vaultItems : []).map((v) => (
                     <option key={v.id} value={`${v.name} (#${v.id})`}>
                       {v.name} (#{v.id})
                     </option>

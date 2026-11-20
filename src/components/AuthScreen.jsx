@@ -32,6 +32,8 @@ export default function AuthScreen({
   const [regPhone, setRegPhone] = useState('');
   const [regPassword, setRegPassword] = useState('');
 
+  const safeAccounts = Array.isArray(accounts) ? accounts : [];
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     setError('');
@@ -44,7 +46,7 @@ export default function AuthScreen({
 
     // Strict check for the single Admin account: username 'admin' and password 'admin123'
     if (inputId === 'admin') {
-      const adminAcc = accounts.find((a) => a.role === 'admin');
+      const adminAcc = safeAccounts.find((a) => a.role === 'admin');
       if (password === 'admin123' && adminAcc) {
         onLoginSuccess(adminAcc);
         return;
@@ -54,7 +56,7 @@ export default function AuthScreen({
       }
     }
 
-    const found = accounts.find(
+    const found = safeAccounts.find(
       (a) =>
         a.role !== 'admin' &&
         (a.email.toLowerCase() === inputId ||
@@ -88,7 +90,7 @@ export default function AuthScreen({
       return;
     }
 
-    const exists = accounts.some((a) => a.email.toLowerCase() === cleanEmail);
+    const exists = safeAccounts.some((a) => a.email.toLowerCase() === cleanEmail);
     if (exists) {
       setError('Email này đã được đăng ký. Vui lòng chuyển sang tab Đăng nhập!');
       return;

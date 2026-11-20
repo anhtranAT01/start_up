@@ -23,6 +23,7 @@ import SupabaseConfigModal from './components/SupabaseConfigModal';
 import { soundEngine } from './utils/soundEngine';
 import {
   loadLocalCache,
+  saveLocalCache,
   fetchBackendState,
   pushBackendState,
   loadSessionUser,
@@ -33,7 +34,11 @@ import { hasSupabaseConfig } from './utils/supabaseClient';
 export default function App() {
   const cached = loadLocalCache();
 
-  const [accounts, setAccounts] = useState(() => cached?.accounts || INITIAL_ACCOUNTS);
+  const [accounts, setAccounts] = useState(() =>
+    Array.isArray(cached?.accounts) && cached.accounts.length > 0
+      ? cached.accounts
+      : INITIAL_ACCOUNTS
+  );
   const [user, setUser] = useState(() => loadSessionUser());
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSupabaseModal, setShowSupabaseModal] = useState(false);
@@ -42,12 +47,28 @@ export default function App() {
   const [activeScreen, setActiveScreen] = useState('feed');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [posts, setPosts] = useState(() => cached?.posts || INITIAL_POSTS);
-  const [vaultItems, setVaultItems] = useState(() => cached?.vaultItems || INITIAL_VAULT_ITEMS);
-  const [capsules, setCapsules] = useState(() => cached?.capsules || INITIAL_TIME_CAPSULES);
-  const [reminders, setReminders] = useState(() => cached?.reminders || INITIAL_REMINDERS);
-  const [dispatchOrders, setDispatchOrders] = useState(
-    () => cached?.dispatchOrders || INITIAL_DISPATCH_ORDERS
+  const [posts, setPosts] = useState(() =>
+    Array.isArray(cached?.posts) && cached.posts.length > 0 ? cached.posts : INITIAL_POSTS
+  );
+  const [vaultItems, setVaultItems] = useState(() =>
+    Array.isArray(cached?.vaultItems) && cached.vaultItems.length > 0
+      ? cached.vaultItems
+      : INITIAL_VAULT_ITEMS
+  );
+  const [capsules, setCapsules] = useState(() =>
+    Array.isArray(cached?.capsules) && cached.capsules.length > 0
+      ? cached.capsules
+      : INITIAL_TIME_CAPSULES
+  );
+  const [reminders, setReminders] = useState(() =>
+    Array.isArray(cached?.reminders) && cached.reminders.length > 0
+      ? cached.reminders
+      : INITIAL_REMINDERS
+  );
+  const [dispatchOrders, setDispatchOrders] = useState(() =>
+    Array.isArray(cached?.dispatchOrders) && cached.dispatchOrders.length > 0
+      ? cached.dispatchOrders
+      : INITIAL_DISPATCH_ORDERS
   );
 
   const [syncStatus, setSyncStatus] = useState('synced'); // 'syncing' | 'synced' | 'local'
@@ -62,6 +83,14 @@ export default function App() {
     }, 3600);
   }, []);
 
+  const safeStopSound = useCallback(() => {
+    try {
+      soundEngine.stop();
+    } catch (e) {
+      console.warn('Sound stop error:', e);
+    }
+  }, []);
+
   // 1. Fetch state from Backend API on mount safely
   useEffect(() => {
     let mounted = true;
@@ -71,7 +100,13 @@ export default function App() {
         const local = loadLocalCache();
 
         // If local browser has user modifications, preserve them
-        if (local && !local.isSeed && local.updatedAt && remote.updatedAt && local.updatedAt >= remote.updatedAt) {
+        if (
+          local &&
+          !local.isSeed &&
+          local.updatedAt &&
+          remote.updatedAt &&
+          local.updatedAt >= remote.updatedAt
+        ) {
           setSyncStatus('synced');
           return;
         }
@@ -85,12 +120,12 @@ export default function App() {
 
         if (remote.updatedAt && (!local?.updatedAt || remote.updatedAt > local.updatedAt)) {
           isRemoteUpdate.current = true;
-          if (remote.accounts) setAccounts(remote.accounts);
-          if (remote.posts) setPosts(remote.posts);
-          if (remote.vaultItems) setVaultItems(remote.vaultItems);
-          if (remote.capsules) setCapsules(remote.capsules);
-          if (remote.reminders) setReminders(remote.reminders);
-          if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
+          if (Array.isArray(remote.accounts)) setAccounts(remote.accounts);
+          if (Array.isArray(remote.posts)) setPosts(remote.posts);
+          if (Array.isArray(remote.vaultItems)) setVaultItems(remote.vaultItems);
+          if (Array.isArray(remote.capsules)) setCapsules(remote.capsules);
+          if (Array.isArray(remote.reminders)) setReminders(remote.reminders);
+          if (Array.isArray(remote.dispatchOrders)) setDispatchOrders(remote.dispatchOrders);
           saveLocalCache(remote);
         }
         setSyncStatus('synced');
@@ -127,7 +162,11 @@ export default function App() {
     };
 
     // Instant local cache save - zero lag for user interactions
-    saveLocalCache(payload);
+    try {
+      saveLocalCache(payload);
+    } catch (e) {
+      console.warn('Failed to save local cache:', e);
+    }
 
     // Debounced background push
     setSyncStatus('syncing');
@@ -142,11 +181,15 @@ export default function App() {
 
   // 3. Persist logged-in user session
   useEffect(() => {
-    saveSessionUser(user);
+    try {
+      saveSessionUser(user);
+    } catch (e) {
+      console.warn('Failed to save user session:', e);
+    }
   }, [user]);
 
   const handleLoginSuccess = (acc) => {
-    soundEngine.stop();
+    safeStopSound();
     setUser(acc);
     if (acc.role === 'admin') {
       setActiveScreen('dispatch');
@@ -158,7 +201,7 @@ export default function App() {
   };
 
   const handleRegisterAccount = (newAccount) => {
-    setAccounts((prev) => [newAccount, ...prev]);
+    setAccounts((prev) => [newAccount, ...(Array.isArray(prev) ? prev : [])]);
     setUser(newAccount);
 
     const starterReminder = {
@@ -170,14 +213,14 @@ export default function App() {
       autoShip: false,
       recipients: newAccount.email,
     };
-    setReminders((prev) => [starterReminder, ...prev]);
+    setReminders((prev) => [starterReminder, ...(Array.isArray(prev) ? prev : [])]);
 
     setActiveScreen('feed');
     showToast(`Chào mừng ${newAccount.name}! Tài khoản của bạn đã được lưu vào Backend.`);
   };
 
   const handleLogout = () => {
-    soundEngine.stop();
+    safeStopSound();
     setUser(null);
     setActiveScreen('feed');
   };
@@ -192,14 +235,14 @@ export default function App() {
     }));
 
     setAccounts((prev) =>
-      prev.map((acc) =>
-        acc.email === user.email ? { ...acc, name, bio, phone, avatar } : acc
+      (Array.isArray(prev) ? prev : []).map((acc) =>
+        acc.email === user?.email ? { ...acc, name, bio, phone, avatar } : acc
       )
     );
 
     setPosts((prev) =>
-      prev.map((p) =>
-        p.authorEmail === user.email && !p.isAnonymous
+      (Array.isArray(prev) ? prev : []).map((p) =>
+        p.authorEmail === user?.email && !p.isAnonymous
           ? {
               ...p,
               author: name,
@@ -215,8 +258,8 @@ export default function App() {
   };
 
   const handleCreateOrder = (newVaultItem, newDispatchOrder) => {
-    setVaultItems((prev) => [newVaultItem, ...prev]);
-    setDispatchOrders((prev) => [newDispatchOrder, ...prev]);
+    setVaultItems((prev) => [newVaultItem, ...(Array.isArray(prev) ? prev : [])]);
+    setDispatchOrders((prev) => [newDispatchOrder, ...(Array.isArray(prev) ? prev : [])]);
   };
 
   const handleUpgradeTier = (tierId, tierName) => {
@@ -225,8 +268,8 @@ export default function App() {
 
     setUser((prev) => ({ ...prev, tierId, tierName, maxStorageGB }));
     setAccounts((prev) =>
-      prev.map((acc) =>
-        acc.email === user.email
+      (Array.isArray(prev) ? prev : []).map((acc) =>
+        acc.email === user?.email
           ? { ...acc, tierId, tierName, maxStorageGB }
           : acc
       )
@@ -234,7 +277,8 @@ export default function App() {
   };
 
   const handleUpdateDispatchStep = (orderId, nextStep) => {
-    const targetOrder = dispatchOrders.find((o) => o.id === orderId);
+    const safeOrders = Array.isArray(dispatchOrders) ? dispatchOrders : [];
+    const targetOrder = safeOrders.find((o) => o.id === orderId);
     if (!targetOrder) return;
 
     let generatedLocation = targetOrder.assignedLocation;
@@ -247,7 +291,7 @@ export default function App() {
     }
 
     setDispatchOrders((prev) =>
-      prev.map((o) =>
+      (Array.isArray(prev) ? prev : []).map((o) =>
         o.id === orderId
           ? { ...o, step: nextStep, assignedLocation: generatedLocation }
           : o
@@ -255,7 +299,7 @@ export default function App() {
     );
 
     setVaultItems((prev) =>
-      prev.map((v) => {
+      (Array.isArray(prev) ? prev : []).map((v) => {
         if (v.id !== targetOrder.vaultId) return v;
         if (nextStep === 2) {
           return {
@@ -273,6 +317,7 @@ export default function App() {
           };
         }
         if (nextStep === 4) {
+          const prevLogs = v.digitalSpace?.inspectionLogs || [];
           return {
             ...v,
             status: v.isTimeCapsule ? 'locked' : 'stored',
@@ -280,13 +325,13 @@ export default function App() {
             location: generatedLocation,
             lastInspected: 'Vừa nhập kho xong',
             digitalSpace: {
-              ...v.digitalSpace,
+              ...(v.digitalSpace || {}),
               inspectionLogs: [
                 {
                   date: '16/11/2026 - Vừa xong',
                   status: `Đã quét mã QR nhập kho thành công tại ${generatedLocation}.`,
                 },
-                ...v.digitalSpace.inspectionLogs,
+                ...prevLogs,
               ],
             },
           };
@@ -303,32 +348,35 @@ export default function App() {
   };
 
   const handleSendInspectionReport = (orderId) => {
-    const targetOrder = dispatchOrders.find((o) => o.id === orderId);
+    const safeOrders = Array.isArray(dispatchOrders) ? dispatchOrders : [];
+    const targetOrder = safeOrders.find((o) => o.id === orderId);
     if (!targetOrder) return;
 
     setDispatchOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, lastReportSent: true } : o))
+      (Array.isArray(prev) ? prev : []).map((o) =>
+        o.id === orderId ? { ...o, lastReportSent: true } : o
+      )
     );
 
     setVaultItems((prev) =>
-      prev.map((v) =>
-        v.id === targetOrder.vaultId
-          ? {
-              ...v,
-              lastInspected: 'Vừa gửi báo cáo ảnh chụp',
-              digitalSpace: {
-                ...v.digitalSpace,
-                inspectionLogs: [
-                  {
-                    date: '16/11/2026 - Vừa xong',
-                    status: 'Nhân viên kho đã gửi bộ ảnh kiểm định tình trạng hộp nguyên vẹn 100%.',
-                  },
-                  ...v.digitalSpace.inspectionLogs,
-                ],
+      (Array.isArray(prev) ? prev : []).map((v) => {
+        if (v.id !== targetOrder.vaultId) return v;
+        const prevLogs = v.digitalSpace?.inspectionLogs || [];
+        return {
+          ...v,
+          lastInspected: 'Vừa gửi báo cáo ảnh chụp',
+          digitalSpace: {
+            ...(v.digitalSpace || {}),
+            inspectionLogs: [
+              {
+                date: '16/11/2026 - Vừa xong',
+                status: 'Nhân viên kho đã gửi bộ ảnh kiểm định tình trạng hộp nguyên vẹn 100%.',
               },
-            }
-          : v
-      )
+              ...prevLogs,
+            ],
+          },
+        };
+      })
     );
 
     showToast(`Đã gửi báo cáo ảnh chụp định kỳ cho hộp #${targetOrder.vaultId} tới khách hàng!`);
@@ -337,29 +385,34 @@ export default function App() {
   if (!user) {
     return (
       <AuthScreen
-        accounts={accounts}
+        accounts={Array.isArray(accounts) ? accounts : INITIAL_ACCOUNTS}
         onLoginSuccess={handleLoginSuccess}
         onRegisterAccount={handleRegisterAccount}
       />
     );
   }
 
+  const safeVaultItems = Array.isArray(vaultItems) ? vaultItems : [];
+  const safeCapsules = Array.isArray(capsules) ? capsules : [];
+  const safeReminders = Array.isArray(reminders) ? reminders : [];
+  const safeDispatchOrders = Array.isArray(dispatchOrders) ? dispatchOrders : [];
+
   const userVaultItems =
     user.role === 'admin'
-      ? vaultItems
-      : vaultItems.filter((v) => v.ownerEmail === user.email);
+      ? safeVaultItems
+      : safeVaultItems.filter((v) => v.ownerEmail === user.email);
 
   const userCapsules =
     user.role === 'admin'
-      ? capsules
-      : capsules.filter((c) => !c.ownerEmail || c.ownerEmail === user.email);
+      ? safeCapsules
+      : safeCapsules.filter((c) => !c.ownerEmail || c.ownerEmail === user.email);
 
   const userReminders =
     user.role === 'admin'
-      ? reminders
-      : reminders.filter((r) => !r.ownerEmail || r.ownerEmail === user.email);
+      ? safeReminders
+      : safeReminders.filter((r) => !r.ownerEmail || r.ownerEmail === user.email);
 
-  const pendingDispatchCount = dispatchOrders.filter((o) => o.step < 4).length;
+  const pendingDispatchCount = safeDispatchOrders.filter((o) => (o.step || 1) < 4).length;
 
   const safeActiveScreen =
     activeScreen === 'dispatch' && user.role !== 'admin' ? 'feed' : activeScreen;
@@ -376,7 +429,7 @@ export default function App() {
         remindersCount={userReminders.length}
         notifications={userReminders}
         onNavigate={(scr) => {
-          soundEngine.stop();
+          safeStopSound();
           setActiveScreen(scr);
         }}
         onOpenSupabaseConfig={() => setShowSupabaseModal(true)}
@@ -388,7 +441,7 @@ export default function App() {
           user={user}
           activeScreen={safeActiveScreen}
           onNavigate={(scr) => {
-            soundEngine.stop();
+            safeStopSound();
             setActiveScreen(scr);
           }}
           vaultCount={userVaultItems.length}
@@ -400,12 +453,15 @@ export default function App() {
             <ScreenFeed
               user={user}
               onEditProfile={() => setShowProfileModal(true)}
-              posts={posts}
+              posts={Array.isArray(posts) ? posts : []}
               setPosts={setPosts}
               vaultItems={userVaultItems}
               searchQuery={searchQuery}
               showToast={showToast}
-              onNavigate={setActiveScreen}
+              onNavigate={(scr) => {
+                safeStopSound();
+                setActiveScreen(scr);
+              }}
             />
           )}
 
@@ -414,7 +470,10 @@ export default function App() {
               user={user}
               onCreateOrder={handleCreateOrder}
               showToast={showToast}
-              onNavigate={setActiveScreen}
+              onNavigate={(scr) => {
+                safeStopSound();
+                setActiveScreen(scr);
+              }}
             />
           )}
 
@@ -425,7 +484,10 @@ export default function App() {
               setVaultItems={setVaultItems}
               searchQuery={searchQuery}
               showToast={showToast}
-              onNavigate={setActiveScreen}
+              onNavigate={(scr) => {
+                safeStopSound();
+                setActiveScreen(scr);
+              }}
             />
           )}
 
@@ -452,8 +514,8 @@ export default function App() {
           {safeActiveScreen === 'dispatch' && user.role === 'admin' && (
             <ScreenDispatch
               user={user}
-              accounts={accounts}
-              dispatchOrders={dispatchOrders}
+              accounts={Array.isArray(accounts) ? accounts : []}
+              dispatchOrders={safeDispatchOrders}
               onUpdateDispatchStep={handleUpdateDispatchStep}
               onSendInspectionReport={handleSendInspectionReport}
             />
@@ -501,12 +563,12 @@ export default function App() {
             fetchBackendState()
               .then((remote) => {
                 if (remote) {
-                  if (remote.accounts) setAccounts(remote.accounts);
-                  if (remote.posts) setPosts(remote.posts);
-                  if (remote.vaultItems) setVaultItems(remote.vaultItems);
-                  if (remote.capsules) setCapsules(remote.capsules);
-                  if (remote.reminders) setReminders(remote.reminders);
-                  if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
+                  if (Array.isArray(remote.accounts)) setAccounts(remote.accounts);
+                  if (Array.isArray(remote.posts)) setPosts(remote.posts);
+                  if (Array.isArray(remote.vaultItems)) setVaultItems(remote.vaultItems);
+                  if (Array.isArray(remote.capsules)) setCapsules(remote.capsules);
+                  if (Array.isArray(remote.reminders)) setReminders(remote.reminders);
+                  if (Array.isArray(remote.dispatchOrders)) setDispatchOrders(remote.dispatchOrders);
                 }
               })
               .catch(() => {});

@@ -170,7 +170,7 @@ export default function ScreenFeed({
       comments: [],
     };
 
-    setPosts([newPost, ...posts]);
+    setPosts((prev) => [newPost, ...(Array.isArray(prev) ? prev : [])]);
     setContent('');
     setSelectedImage('');
     setRecordedAudio(null);
@@ -183,14 +183,14 @@ export default function ScreenFeed({
   };
 
   const handleToggleCandle = (postId) => {
-    setPosts(
-      posts.map((p) => {
+    setPosts((prev) =>
+      (Array.isArray(prev) ? prev : []).map((p) => {
         if (p.id !== postId) return p;
         const next = !p.candledByMe;
         return {
           ...p,
           candledByMe: next,
-          candles: next ? p.candles + 1 : Math.max(0, p.candles - 1),
+          candles: next ? (p.candles || 0) + 1 : Math.max(0, (p.candles || 0) - 1),
         };
       })
     );
@@ -199,16 +199,16 @@ export default function ScreenFeed({
   const handleAddComment = (postId) => {
     const text = (commentInputs[postId] || '').trim();
     if (!text) return;
-    setPosts(
-      posts.map((p) =>
+    setPosts((prev) =>
+      (Array.isArray(prev) ? prev : []).map((p) =>
         p.id === postId
           ? {
               ...p,
               comments: [
-                ...p.comments,
+                ...(Array.isArray(p.comments) ? p.comments : []),
                 {
                   id: `c-${Date.now()}`,
-                  author: user.name,
+                  author: user?.name || 'Thành viên',
                   text,
                   time: 'Vừa xong',
                 },
@@ -217,33 +217,35 @@ export default function ScreenFeed({
           : p
       )
     );
-    setCommentInputs({ ...commentInputs, [postId]: '' });
+    setCommentInputs((prev) => ({ ...prev, [postId]: '' }));
   };
 
-  const filteredPosts = posts.filter((p) => {
+  const safePosts = Array.isArray(posts) ? posts : [];
+  const filteredPosts = safePosts.filter((p) => {
+    if (!p) return false;
     if (
       p.visibility === 'Chỉ mình tôi' &&
-      p.authorEmail !== user.email &&
-      user.role !== 'admin'
+      p.authorEmail !== user?.email &&
+      user?.role !== 'admin'
     ) {
       return false;
     }
 
-    const q = searchQuery.trim().toLowerCase();
+    const q = (searchQuery || '').trim().toLowerCase();
     const matchSearch =
       !q ||
-      p.content.toLowerCase().includes(q) ||
-      p.author.toLowerCase().includes(q) ||
-      p.hashtags.some((h) => h.toLowerCase().includes(q)) ||
-      (p.verifiedBox && p.verifiedBox.id.toLowerCase().includes(q));
+      (p.content && p.content.toLowerCase().includes(q)) ||
+      (p.author && p.author.toLowerCase().includes(q)) ||
+      (Array.isArray(p.hashtags) && p.hashtags.some((h) => h.toLowerCase().includes(q))) ||
+      (p.verifiedBox && p.verifiedBox.id && p.verifiedBox.id.toLowerCase().includes(q));
 
     if (!matchSearch) return false;
     if (activeTab === 'all') return true;
     if (activeTab === 'physical') return Boolean(p.verifiedBox);
     if (activeTab === 'future')
       return p.category === 'future' || p.visibility === 'Khóa đến ngày kỷ niệm';
-    if (activeTab === 'anonymous') return p.isAnonymous;
-    if (activeTab === 'trending') return p.isTrending || p.candles >= 150;
+    if (activeTab === 'anonymous') return Boolean(p.isAnonymous);
+    if (activeTab === 'trending') return Boolean(p.isTrending) || (p.candles || 0) >= 150;
     return true;
   });
 
@@ -667,7 +669,7 @@ export default function ScreenFeed({
 
                   {/* Hashtags */}
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {post.hashtags.map((tag) => (
+                    {(post.hashtags || []).map((tag) => (
                       <span
                         key={tag}
                         className="text-xs font-medium text-[#7C4D2B] bg-[#FAF6F0] px-2.5 py-0.5 rounded-full border border-[#E6DEC8]/70"
@@ -710,7 +712,7 @@ export default function ScreenFeed({
                             post.candledByMe ? 'text-[#D96B43] fill-[#E5A93C]' : ''
                           }`}
                         />
-                        <span>Thắp nến đồng cảm ({post.candles})</span>
+                        <span>Thắp nến đồng cảm ({post.candles || 0})</span>
                       </button>
 
                       {/* Comment Toggle */}
@@ -724,7 +726,7 @@ export default function ScreenFeed({
                         className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#FAF6F0] border border-[#E6DEC8] text-[#6E6259] hover:border-[#7C4D2B] hover:text-[#7C4D2B] transition-colors"
                       >
                         <MessageCircle className="w-4 h-4" />
-                        <span>Gửi lời nhắn ({post.comments.length})</span>
+                        <span>Gửi lời nhắn ({(post.comments || []).length})</span>
                       </button>
 
                       {/* Remind Me */}
@@ -752,9 +754,9 @@ export default function ScreenFeed({
                   {/* Expandable Comments Section */}
                   {openComments[post.id] && (
                     <div className="mt-4 pt-3 border-t border-[#E6DEC8]/60 space-y-3">
-                      {post.comments.length > 0 && (
+                      {(post.comments || []).length > 0 && (
                         <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
-                          {post.comments.map((c) => (
+                          {(post.comments || []).map((c) => (
                             <div
                               key={c.id}
                               className="p-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]/60 text-xs"
@@ -776,7 +778,7 @@ export default function ScreenFeed({
                             setCommentInputs({ ...commentInputs, [post.id]: e.target.value })
                           }
                           onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                          placeholder={`Bình luận dưới tên ${user.name}...`}
+                          placeholder={`Bình luận dưới tên ${user?.name || 'Thành viên'}...`}
                           className="flex-1 px-3.5 py-2 rounded-full bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
                         />
                         <button

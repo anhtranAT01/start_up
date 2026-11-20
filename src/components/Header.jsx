@@ -134,7 +134,7 @@ export default function Header({
               <div className="absolute right-0 mt-2 w-80 bg-white border border-[#E6DEC8] rounded-2xl shadow-warm-lg p-4 z-50">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-serif font-bold text-sm text-[#2C2523]">
-                    Lời Nhắc Kỷ Niệm Của {user.name}
+                    Lời Nhắc Kỷ Niệm Của {user?.name || 'Bạn'}
                   </h4>
                   <button
                     onClick={() => {
@@ -147,12 +147,12 @@ export default function Header({
                   </button>
                 </div>
                 <div className="space-y-2.5 max-h-64 overflow-y-auto">
-                  {notifications.length === 0 ? (
+                  {(!notifications || notifications.length === 0) ? (
                     <div className="text-xs text-[#6E6259] py-3 text-center">
                       Chưa có lời nhắc nào cho tài khoản này.
                     </div>
                   ) : (
-                    notifications.map((n) => (
+                    (Array.isArray(notifications) ? notifications : []).map((n) => (
                       <div
                         key={n.id}
                         className="p-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]/70 text-xs"

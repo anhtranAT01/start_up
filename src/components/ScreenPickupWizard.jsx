@@ -91,8 +91,8 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
   const [duration, setDuration] = useState('3 năm');
 
   // Step 3
-  const [senderName, setSenderName] = useState(user.name);
-  const [phone, setPhone] = useState(user.phone);
+  const [senderName, setSenderName] = useState(user?.name || '');
+  const [phone, setPhone] = useState(user?.phone || '');
   const [address, setAddress] = useState('P.804, Ký túc xá Mỹ Đình, Nam Từ Liêm, Hà Nội');
   const [pickupDate, setPickupDate] = useState('2026-11-18');
   const [timeSlot, setTimeSlot] = useState(TIME_SLOTS[1]);
@@ -102,10 +102,10 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
   const [agreed, setAgreed] = useState(false);
 
   const selectedBoxObj = BOX_TYPES.find((b) => b.name === boxType) || BOX_TYPES[0];
-  const pickupFee = user.tierId === 'chest' || user.tierId === 'legacy' ? 0 : 35000;
-  const nfcFee = addNfc ? (user.tierId === 'chest' || user.tierId === 'legacy' ? 0 : 60000) : 0;
+  const pickupFee = user?.tierId === 'chest' || user?.tierId === 'legacy' ? 0 : 35000;
+  const nfcFee = addNfc ? (user?.tierId === 'chest' || user?.tierId === 'legacy' ? 0 : 60000) : 0;
   const totalAmount = selectedBoxObj.price + pickupFee + nfcFee;
-  const insuranceCover = user.tierId === 'legacy' ? 20000000 : user.tierId === 'chest' ? 5000000 : 1000000;
+  const insuranceCover = user?.tierId === 'legacy' ? 20000000 : user?.tierId === 'chest' ? 5000000 : 1000000;
 
   const handleNext = () => {
     if (step === 1 && !boxName.trim()) {

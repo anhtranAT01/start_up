@@ -30,6 +30,9 @@ export default function ScreenDispatch({
     return null;
   }
 
+  const safeOrders = Array.isArray(dispatchOrders) ? dispatchOrders : [];
+  const safeAccounts = Array.isArray(accounts) ? accounts : [];
+
   const stepLabels = {
     1: 'Mới tạo lệnh — Chờ điều phối',
     2: 'Shipper đang đến lấy quà',
@@ -57,13 +60,13 @@ export default function ScreenDispatch({
           <div className="bg-white/10 border border-white/15 rounded-2xl px-4 py-3 text-center">
             <div className="text-[11px] text-white/75">Tổng đơn vận hành</div>
             <div className="font-serif text-2xl font-bold text-[#E5A93C]">
-              {dispatchOrders.length} Đơn
+              {safeOrders.length} Đơn
             </div>
           </div>
           <div className="bg-white/10 border border-white/15 rounded-2xl px-4 py-3 text-center">
             <div className="text-[11px] text-white/75">Tài khoản đăng ký</div>
             <div className="font-serif text-2xl font-bold text-white">
-              {accounts.length} User
+              {safeAccounts.length} User
             </div>
           </div>
         </div>
@@ -80,7 +83,7 @@ export default function ScreenDispatch({
           }`}
         >
           <Truck className="w-4 h-4" />
-          <span>Điều Phối Đơn Lấy Quà & Nhập Kho ({dispatchOrders.length})</span>
+          <span>Điều Phối Đơn Lấy Quà & Nhập Kho ({safeOrders.length})</span>
         </button>
 
         <button
@@ -92,13 +95,13 @@ export default function ScreenDispatch({
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>Quản Lý Tài Khoản & Phân Quyền ({accounts.length})</span>
+          <span>Quản Lý Tài Khoản & Phân Quyền ({safeAccounts.length})</span>
         </button>
       </div>
 
       {activeAdminTab === 'orders' ? (
         <div className="space-y-4">
-          {dispatchOrders.map((order) => (
+          {safeOrders.map((order) => (
             <div
               key={order.id}
               className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm space-y-4"
@@ -241,7 +244,7 @@ export default function ScreenDispatch({
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DEC8]/70">
-                {accounts.map((acc) => (
+                {safeAccounts.map((acc) => (
                   <tr key={acc.id} className="hover:bg-[#FAF6F0]/50">
                     <td className="p-3 flex items-center gap-2.5 font-semibold text-[#2C2523]">
                       <SafeImage

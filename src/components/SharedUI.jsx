@@ -125,22 +125,26 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
   }, [playing, durationSeconds]);
 
   const togglePlay = () => {
-    if (playing) {
-      setPlaying(false);
-      if (audio?.blobUrl && htmlAudioRef.current) {
-        htmlAudioRef.current.pause();
+    try {
+      if (playing) {
+        setPlaying(false);
+        if (audio?.blobUrl && htmlAudioRef.current) {
+          htmlAudioRef.current.pause();
+        } else {
+          soundEngine.stop();
+        }
       } else {
-        soundEngine.stop();
-      }
-    } else {
-      setPlaying(true);
-      if (audio?.blobUrl && htmlAudioRef.current) {
-        htmlAudioRef.current.play().catch(() => {
+        setPlaying(true);
+        if (audio?.blobUrl && htmlAudioRef.current) {
+          htmlAudioRef.current.play().catch(() => {
+            soundEngine.start(trackId, audio?.title || '');
+          });
+        } else {
           soundEngine.start(trackId, audio?.title || '');
-        });
-      } else {
-        soundEngine.start(trackId, audio?.title || '');
+        }
       }
+    } catch (e) {
+      console.warn('Audio play error:', e);
     }
   };
 

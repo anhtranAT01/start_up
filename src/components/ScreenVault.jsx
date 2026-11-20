@@ -77,7 +77,8 @@ export default function ScreenVault({
   const [extendItem, setExtendItem] = useState(null);
   const [extendChoice, setExtendChoice] = useState('1 năm');
 
-  const totalInsurance = vaultItems.reduce((sum, item) => sum + (item.insuranceValue || 0), 0);
+  const safeVaultList = Array.isArray(vaultItems) ? vaultItems : [];
+  const totalInsurance = safeVaultList.reduce((sum, item) => sum + (item.insuranceValue || 0), 0);
 
   const getStatusBadge = (item) => {
     if (item.status === 'stored') {
@@ -101,28 +102,34 @@ export default function ScreenVault({
   };
 
   const closeNfcModal = () => {
-    soundEngine.stop();
+    try {
+      soundEngine.stop();
+    } catch (e) {
+      console.warn('Sound stop error:', e);
+    }
     setNfcItem(null);
   };
 
   const handleAddDigitalMemory = () => {
     if (!newNoteText.trim() && !newPhotoUrl) return;
     setVaultItems((prev) =>
-      prev.map((item) => {
+      (Array.isArray(prev) ? prev : []).map((item) => {
         if (item.id !== addMemoryItem.id) return item;
+        const prevPhotos = item.digitalSpace?.photos || [];
+        const prevNotes = item.digitalSpace?.notes || [];
         return {
           ...item,
           digitalSpace: {
-            ...item.digitalSpace,
+            ...(item.digitalSpace || {}),
             photos: newPhotoUrl
-              ? [newPhotoUrl, ...item.digitalSpace.photos]
-              : item.digitalSpace.photos,
+              ? [newPhotoUrl, ...prevPhotos]
+              : prevPhotos,
             notes: newNoteText.trim()
               ? [
                   { date: '16/11/2026', text: newNoteText.trim() },
-                  ...item.digitalSpace.notes,
+                  ...prevNotes,
                 ]
-              : item.digitalSpace.notes,
+              : prevNotes,
           },
         };
       })
@@ -156,26 +163,26 @@ export default function ScreenVault({
     }
     const targetEmail = transferContact.trim().toLowerCase();
     setVaultItems((prev) =>
-      prev.map((item) =>
-        item.id === transferItem.id
-          ? {
-              ...item,
-              ownerEmail: targetEmail.includes('@') ? targetEmail : item.ownerEmail,
-              digitalSpace: {
-                ...item.digitalSpace,
-                notes: [
-                  {
-                    date: '16/11/2026',
-                    text: `Đã chuyển quyền sở hữu từ ${user.name} tới ${transferContact}. Lời nhắn: "${
-                      transferMsg || 'Gửi bạn giữ giùm phần ký ức này.'
-                    }"`,
-                  },
-                  ...item.digitalSpace.notes,
-                ],
+      (Array.isArray(prev) ? prev : []).map((item) => {
+        if (item.id !== transferItem.id) return item;
+        const prevNotes = item.digitalSpace?.notes || [];
+        return {
+          ...item,
+          ownerEmail: targetEmail.includes('@') ? targetEmail : item.ownerEmail,
+          digitalSpace: {
+            ...(item.digitalSpace || {}),
+            notes: [
+              {
+                date: '16/11/2026',
+                text: `Đã chuyển quyền sở hữu từ ${user?.name || 'Khách hàng'} tới ${transferContact}. Lời nhắn: "${
+                  transferMsg || 'Gửi bạn giữ giùm phần ký ức này.'
+                }"`,
               },
-            }
-          : item
-      )
+              ...prevNotes,
+            ],
+          },
+        };
+      })
     );
     showToast(`Đã trao quyền sở hữu hộp #${transferItem.id} tới ${transferContact}!`);
     setTransferContact('');
@@ -185,7 +192,7 @@ export default function ScreenVault({
 
   const handleConfirmExtend = () => {
     setVaultItems((prev) =>
-      prev.map((item) =>
+      (Array.isArray(prev) ? prev : []).map((item) =>
         item.id === extendItem.id
           ? {
               ...item,
@@ -202,12 +209,13 @@ export default function ScreenVault({
     setExtendItem(null);
   };
 
-  const combinedQuery = (localSearch || searchQuery).trim().toLowerCase();
-  const filteredItems = vaultItems.filter((item) => {
+  const combinedQuery = (localSearch || searchQuery || '').trim().toLowerCase();
+  const filteredItems = (Array.isArray(vaultItems) ? vaultItems : []).filter((item) => {
+    if (!item) return false;
     const matchQuery =
       !combinedQuery ||
-      item.name.toLowerCase().includes(combinedQuery) ||
-      item.id.toLowerCase().includes(combinedQuery);
+      (item.name && item.name.toLowerCase().includes(combinedQuery)) ||
+      (item.id && item.id.toLowerCase().includes(combinedQuery));
     if (!matchQuery) return false;
     if (statusFilter === 'all') return true;
     return item.status === statusFilter;
