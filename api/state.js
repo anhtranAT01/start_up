@@ -13,12 +13,22 @@ import {
 const TMP_DB = path.join('/tmp', 'cua-hang-ky-uc-db.json');
 let memoryStore = null;
 
-// Optional Supabase configuration
-const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+// Optional Supabase configuration supporting multiple prefixes (SUPABASE, STORAGE, VITE, NEXT_PUBLIC)
+const supabaseUrl =
+  process.env.SUPABASE_URL ||
+  process.env.VITE_SUPABASE_URL ||
+  process.env.STORAGE_URL ||
+  process.env.STORAGE_SUPABASE_URL ||
+  process.env.NEXT_PUBLIC_SUPABASE_URL;
+
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   process.env.SUPABASE_ANON_KEY ||
-  process.env.VITE_SUPABASE_ANON_KEY;
+  process.env.VITE_SUPABASE_ANON_KEY ||
+  process.env.STORAGE_SERVICE_ROLE_KEY ||
+  process.env.STORAGE_ANON_KEY ||
+  process.env.STORAGE_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabase =
   supabaseUrl && supabaseKey
@@ -53,6 +63,13 @@ async function loadFromSupabase() {
         isSeed: false,
         updatedAt: data.updated_at || data.payload.updatedAt,
       };
+    }
+
+    // If table exists but row doesn't, seed it once
+    if (!error && !data) {
+      const seed = getSeed();
+      await saveToSupabase(seed);
+      return seed;
     }
   } catch (err) {
     console.error('Supabase load error:', err);
@@ -113,6 +130,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
+    res.setHeader('X-Database-Backend', supabase ? 'supabase' : 'local');
     // Try Supabase first if configured
     const remote = await loadFromSupabase();
     if (remote) {
