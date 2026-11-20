@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Package,
   HardDrive,
@@ -18,6 +18,7 @@ import {
   Sparkles,
   CheckCircle2,
   UserCheck,
+  Upload,
 } from 'lucide-react';
 import { SAMPLE_IMAGES, formatVND } from '../data/mockData';
 import { SafeImage, AudioPlayer } from './SharedUI';
@@ -49,6 +50,20 @@ export default function ScreenVault({
   const [addMemoryItem, setAddMemoryItem] = useState(null);
   const [newNoteText, setNewNoteText] = useState('');
   const [newPhotoUrl, setNewPhotoUrl] = useState(SAMPLE_IMAGES[2].url);
+  const vaultFileRef = useRef(null);
+
+  const handleUploadVaultPhoto = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setNewPhotoUrl(reader.result);
+        showToast(`Đã chọn ảnh "${file.name}" từ máy tính!`);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const [returnItem, setReturnItem] = useState(null);
   const [returnRecipientType, setReturnRecipientType] = useState('self');
@@ -541,9 +556,35 @@ export default function ScreenVault({
             </p>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold mb-1">Chọn ảnh bổ sung</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold">Ảnh kỷ niệm bổ sung</label>
+                  <input
+                    ref={vaultFileRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUploadVaultPhoto}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => vaultFileRef.current?.click()}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#D96B43] text-white text-[11px] font-bold"
+                  >
+                    <Upload className="w-3 h-3" />
+                    <span>Tải ảnh từ máy tính</span>
+                  </button>
+                </div>
+                {newPhotoUrl && (
+                  <div className="mb-2">
+                    <SafeImage
+                      src={newPhotoUrl}
+                      alt="Xem trước"
+                      className="w-full h-28 object-cover rounded-xl border border-[#D96B43]"
+                    />
+                  </div>
+                )}
                 <div className="grid grid-cols-4 gap-2">
-                  {SAMPLE_IMAGES.map((img) => (
+                  {SAMPLE_IMAGES.slice(0, 4).map((img) => (
                     <button
                       key={img.url}
                       onClick={() => setNewPhotoUrl(img.url)}

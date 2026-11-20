@@ -1,0 +1,8 @@
+name = "cua-hang-ky-uc"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "dist"
+
+# Nếu bạn muốn gắn Cloudflare KV để lưu dữ liệu vĩnh viễn trên Cloudflare Edge:
+# [[kv_namespaces]]
+# binding = "MEMORY_VAULT_KV"
+# id = "YOUR_KV_NAMESPACE_ID"

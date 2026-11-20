@@ -19,8 +19,10 @@ import {
   Truck,
   X,
   Download,
-  Volume2,
   Crown,
+  Upload,
+  Camera,
+  Users,
 } from 'lucide-react';
 import { SAMPLE_IMAGES } from '../data/mockData';
 import { SafeImage, QrCodeSvg, AudioPlayer } from './SharedUI';
@@ -35,6 +37,7 @@ const FILTER_TABS = [
 
 export default function ScreenFeed({
   user,
+  onEditProfile,
   posts,
   setPosts,
   vaultItems,
@@ -47,6 +50,7 @@ export default function ScreenFeed({
   // Composer state
   const [content, setContent] = useState('');
   const [selectedImage, setSelectedImage] = useState('');
+  const [customImageUrl, setCustomImageUrl] = useState('');
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
@@ -55,6 +59,7 @@ export default function ScreenFeed({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [visibility, setVisibility] = useState('Công khai');
 
+  const postImageInputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
@@ -64,6 +69,20 @@ export default function ScreenFeed({
 
   // Postcard QR modal state
   const [postcardPost, setPostcardPost] = useState(null);
+
+  const handleUploadPostImage = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setSelectedImage(reader.result);
+        setShowImagePicker(false);
+        showToast(`Đã tải ảnh "${file.name}" từ máy tính lên bài viết!`);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleToggleRecord = async () => {
     if (isRecording) {
@@ -109,8 +128,8 @@ export default function ScreenFeed({
   };
 
   const handleCreatePost = () => {
-    if (!content.trim()) {
-      showToast('Hãy viết vài dòng ký ức trước khi đăng nhé!', 'error');
+    if (!content.trim() && !selectedImage) {
+      showToast('Hãy viết vài dòng ký ức hoặc đính kèm bức ảnh trước khi đăng nhé!', 'error');
       return;
     }
 
@@ -118,6 +137,9 @@ export default function ScreenFeed({
       id: `post-${Date.now()}`,
       authorEmail: user.email,
       author: isAnonymous ? 'Người gửi ký ức ẩn danh' : user.name,
+      authorRole: isAnonymous
+        ? 'Góc tâm sự ẩn danh'
+        : user.bio || `Thành viên ${user.tierName}`,
       avatar: isAnonymous ? '' : user.avatar,
       isAnonymous,
       visibility,
@@ -140,7 +162,7 @@ export default function ScreenFeed({
           }
         : null,
       hashtags: ['#KyUcHomNay', isAnonymous ? '#GocAnDanh' : '#GoiGhemKhoanhKhac'],
-      content: content.trim(),
+      content: content.trim() || 'Một khoảnh khắc đáng nhớ được gói ghém tại Cửa Hàng Ký Ức.',
       image: selectedImage || '',
       audio: recordedAudio,
       candles: 0,
@@ -199,7 +221,6 @@ export default function ScreenFeed({
   };
 
   const filteredPosts = posts.filter((p) => {
-    // Only show "Chỉ mình tôi" posts to their author or Admin
     if (
       p.visibility === 'Chỉ mình tôi' &&
       p.authorEmail !== user.email &&
@@ -222,7 +243,7 @@ export default function ScreenFeed({
     if (activeTab === 'future')
       return p.category === 'future' || p.visibility === 'Khóa đến ngày kỷ niệm';
     if (activeTab === 'anonymous') return p.isAnonymous;
-    if (activeTab === 'trending') return p.isTrending || p.candles >= 100;
+    if (activeTab === 'trending') return p.isTrending || p.candles >= 150;
     return true;
   });
 
@@ -250,19 +271,20 @@ export default function ScreenFeed({
               <span>Không gian hoài niệm đồng bộ tài khoản: {user.name}</span>
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-tight">
-              Mỗi kỷ vật đều mang một linh hồn riêng
+              Cộng đồng lưu giữ ký ức & kỷ vật thời gian
             </h1>
             <p className="text-xs sm:text-sm text-white/85 mt-1 max-w-2xl">
-              Bấm nút <strong>Play (▶)</strong> trên các bài viết bên dưới để lắng nghe giai điệu hộp nhạc & bản thu âm ký ức thực tế.
+              Nơi hàng ngàn câu chuyện từ sinh viên, gia đình trẻ đến những di sản thế hệ được gói ghém và sẻ chia mỗi ngày.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <div className="px-4 py-2.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 text-center">
-              <div className="text-[11px] text-white/75">Hộp kỷ vật của bạn</div>
-              <div className="font-serif text-xl font-bold text-[#E5A93C]">
-                {vaultItems.length} Hộp
-              </div>
-            </div>
+            <button
+              onClick={onEditProfile}
+              className="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all"
+            >
+              <Camera className="w-4 h-4 text-[#E5A93C]" />
+              <span>Đổi Avatar</span>
+            </button>
             <button
               onClick={() => onNavigate('pickup')}
               className="px-4 py-3 rounded-2xl bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-md transition-all"
@@ -279,11 +301,23 @@ export default function ScreenFeed({
           {/* Composer Box */}
           <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
             <div className="flex items-start gap-3.5">
-              <SafeImage
-                src={isAnonymous ? '' : user.avatar}
-                alt={isAnonymous ? 'Ẩn danh' : user.name}
-                className="w-11 h-11 rounded-full object-cover border-2 border-[#E5A93C] shrink-0"
-              />
+              {/* Clickable Avatar to change profile picture */}
+              <button
+                type="button"
+                onClick={onEditProfile}
+                className="relative group shrink-0"
+                title="Bấm để đổi ảnh đại diện của bạn"
+              >
+                <SafeImage
+                  src={isAnonymous ? '' : user.avatar}
+                  alt={isAnonymous ? 'Ẩn danh' : user.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-[#E5A93C] group-hover:opacity-85 transition-opacity"
+                />
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#D96B43] text-white flex items-center justify-center shadow">
+                  <Camera className="w-3 h-3" />
+                </span>
+              </button>
+
               <div className="flex-1 min-w-0">
                 <textarea
                   rows={3}
@@ -293,13 +327,22 @@ export default function ScreenFeed({
                   className="w-full bg-[#FAF6F0] border border-[#E6DEC8] rounded-xl p-3.5 text-sm text-[#2C2523] placeholder-[#6E6259]/75 focus:outline-none focus:ring-2 focus:ring-[#D96B43]/30 focus:border-[#D96B43] resize-none transition-all"
                 />
 
-                {/* Attached Previews */}
+                {/* Hidden File Input for direct PC upload */}
+                <input
+                  ref={postImageInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUploadPostImage}
+                  className="hidden"
+                />
+
+                {/* Attached Image Preview */}
                 {selectedImage && (
                   <div className="mt-3 relative inline-block">
                     <SafeImage
                       src={selectedImage}
                       alt="Ảnh đính kèm"
-                      className="h-32 w-48 object-cover rounded-xl border border-[#E6DEC8]"
+                      className="max-h-48 w-auto rounded-xl border-2 border-[#D96B43]/40 shadow-sm object-cover"
                     />
                     <button
                       onClick={() => setSelectedImage('')}
@@ -352,28 +395,67 @@ export default function ScreenFeed({
                   </div>
                 )}
 
-                {/* Sample Image Picker Drawer */}
+                {/* Image Upload & Sample Picker Drawer */}
                 {showImagePicker && (
-                  <div className="mt-3 p-3 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]">
-                    <div className="text-xs font-semibold text-[#7C4D2B] mb-2">
-                      Chọn ảnh kỷ niệm mẫu:
+                  <div className="mt-3 p-4 rounded-2xl bg-[#FAF6F0] border border-[#E6DEC8] space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-[#7C4D2B]">
+                        Đính kèm hình ảnh kỷ niệm vào bài viết:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => postImageInputRef.current?.click()}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-sm transition-colors"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Tải ảnh từ máy tính của bạn</span>
+                      </button>
+                    </div>
+
+                    {/* Paste custom image URL */}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={customImageUrl}
+                        onChange={(e) => setCustomImageUrl(e.target.value)}
+                        placeholder="Hoặc dán đường dẫn URL ảnh (https://...)..."
+                        className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (customImageUrl.trim()) {
+                            setSelectedImage(customImageUrl.trim());
+                            setCustomImageUrl('');
+                            setShowImagePicker(false);
+                          }
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-white border border-[#E6DEC8] hover:border-[#7C4D2B] text-xs font-semibold text-[#7C4D2B]"
+                      >
+                        Dùng URL
+                      </button>
+                    </div>
+
+                    <div className="text-[11px] font-semibold text-[#6E6259]">
+                      Hoặc chọn nhanh từ thư viện ảnh hoài niệm:
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {SAMPLE_IMAGES.map((img) => (
                         <button
+                          type="button"
                           key={img.url}
                           onClick={() => {
                             setSelectedImage(img.url);
                             setShowImagePicker(false);
                           }}
-                          className="group relative rounded-lg overflow-hidden border border-[#E6DEC8] hover:border-[#D96B43]"
+                          className="group relative rounded-lg overflow-hidden border border-[#E6DEC8] hover:border-[#D96B43] text-left"
                         >
                           <SafeImage
                             src={img.url}
                             alt={img.label}
                             className="w-full h-16 object-cover"
                           />
-                          <div className="text-[10px] p-1 bg-white/90 truncate text-[#2C2523]">
+                          <div className="text-[10px] p-1 bg-white/95 truncate text-[#2C2523]">
                             {img.label}
                           </div>
                         </button>
@@ -548,6 +630,11 @@ export default function ScreenFeed({
                           <span className="font-semibold text-sm text-[#2C2523]">
                             {post.author}
                           </span>
+                          {post.authorRole && (
+                            <span className="text-[11px] font-medium text-[#7C4D2B] bg-[#FAF6F0] px-2 py-0.5 rounded-full border border-[#E6DEC8]/80">
+                              {post.authorRole}
+                            </span>
+                          )}
                           <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#FAF6F0] border border-[#E6DEC8] text-[#6E6259] inline-flex items-center gap-1">
                             {post.visibility === 'Công khai' && <Globe className="w-3 h-3" />}
                             {post.visibility === 'Chỉ mình tôi' && <Lock className="w-3 h-3" />}
@@ -596,7 +683,7 @@ export default function ScreenFeed({
                       <SafeImage
                         src={post.image}
                         alt="Hình ảnh kỷ niệm"
-                        className="w-full max-h-80 object-cover hover:scale-[1.01] transition-transform duration-500"
+                        className="w-full max-h-96 object-cover hover:scale-[1.01] transition-transform duration-500"
                       />
                     </div>
                   )}
@@ -710,20 +797,41 @@ export default function ScreenFeed({
 
         {/* Right 30% Utility Column */}
         <div className="lg:col-span-4 space-y-5">
-          {/* Account Sync Card */}
+          {/* Account Profile & Avatar Edit Card */}
           <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#7C4D2B] flex items-center gap-1.5">
-                <Crown className="w-4 h-4 text-[#D96B43]" />
-                Hồ sơ Ký ức Đồng bộ
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3B7A57]/15 text-[#3B7A57]">
-                Đang trực tuyến
-              </span>
+            <div className="flex items-center gap-3.5">
+              <button
+                type="button"
+                onClick={onEditProfile}
+                className="relative group shrink-0"
+                title="Đổi ảnh đại diện"
+              >
+                <SafeImage
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#E5A93C]"
+                />
+                <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-[#D96B43] text-white flex items-center justify-center shadow">
+                  <Camera className="w-3 h-3" />
+                </span>
+              </button>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-bold text-[#2C2523] truncate">{user.name}</div>
+                <div className="text-xs text-[#6E6259] truncate">
+                  {user.bio || 'Người lưu giữ khoảnh khắc'}
+                </div>
+                <button
+                  type="button"
+                  onClick={onEditProfile}
+                  className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-[#D96B43] hover:underline"
+                >
+                  <Camera className="w-3 h-3" />
+                  <span>Đổi ảnh đại diện & hồ sơ</span>
+                </button>
+              </div>
             </div>
-            <div className="text-sm font-bold text-[#2C2523]">{user.name}</div>
-            <div className="text-xs text-[#6E6259]">{user.email}</div>
-            <div className="mt-3 pt-3 border-t border-[#E6DEC8] grid grid-cols-2 gap-2 text-center">
+
+            <div className="mt-4 pt-3 border-t border-[#E6DEC8] grid grid-cols-2 gap-2 text-center">
               <div className="p-2 rounded-xl bg-[#FAF6F0]">
                 <div className="text-[10px] text-[#6E6259]">Hộp đang gửi</div>
                 <div className="font-serif text-base font-bold text-[#7C4D2B]">
@@ -739,6 +847,64 @@ export default function ScreenFeed({
             </div>
           </div>
 
+          {/* Community Memory Keepers Widget */}
+          <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
+            <div className="flex items-center gap-2 text-[#7C4D2B] font-semibold text-xs uppercase tracking-wider mb-3">
+              <Users className="w-4 h-4 text-[#D96B43]" />
+              <span>Cộng Đồng Người Giữ Ký Ức</span>
+            </div>
+            <div className="space-y-3">
+              {[
+                {
+                  name: 'Mẹ Khánh Vy & Bé Sữa',
+                  role: 'Hộp thời gian 18 năm cho con',
+                  avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
+                  badge: '512 nến',
+                },
+                {
+                  name: 'Đức Minh (KTS)',
+                  role: 'Lưu trữ di sản Ông Nội (1970)',
+                  avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+                  badge: '386 nến',
+                },
+                {
+                  name: 'Linh Đan (Nhạc sĩ Indie)',
+                  role: 'Bản thảo nhạc & Demo Guitar',
+                  avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=150&q=80',
+                  badge: '309 nến',
+                },
+                {
+                  name: 'Thảo Nhi',
+                  role: 'Nhiếp ảnh gia Film Đà Lạt',
+                  avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
+                  badge: '215 nến',
+                },
+              ].map((member) => (
+                <div
+                  key={member.name}
+                  className="flex items-center justify-between gap-2.5 p-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]/60"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <SafeImage
+                      src={member.avatar}
+                      alt={member.name}
+                      className="w-9 h-9 rounded-full object-cover border border-[#E6DEC8] shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-[#2C2523] truncate">
+                        {member.name}
+                      </div>
+                      <div className="text-[10px] text-[#6E6259] truncate">{member.role}</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E5A93C]/20 text-[#7C4D2B] shrink-0">
+                    🔥 {member.badge}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* On This Day */}
           <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
             <div className="flex items-center gap-2 text-[#D96B43] font-semibold text-xs uppercase tracking-wider mb-2">
@@ -746,7 +912,7 @@ export default function ScreenFeed({
               <span>Ký ức ngày này năm xưa</span>
             </div>
             <h3 className="font-serif text-lg font-bold text-[#2C2523] mb-2">
-              16/11/2023 — Chiều mưa ở ga Hà Nội
+              17/11/2023 — Chiều mưa ở ga Hà Nội
             </h3>
             <p className="text-xs text-[#6E6259] leading-relaxed mb-3">
               3 năm trước, một mảnh ký ức về tấm vé tàu SE1 và chiếc hộp nhạc gỗ đã được niêm phong tại Kho Trung Tâm.
@@ -768,9 +934,9 @@ export default function ScreenFeed({
             <div className="space-y-2.5">
               {[
                 { tag: '#ThanhXuan', count: '1.240 câu chuyện' },
-                { tag: '#GuiTuongLai', count: '890 bức thư khóa hẹn' },
-                { tag: '#KyVatTinhYeu', count: '654 hộp quà tại kho' },
-                { tag: '#GocAnDanh', count: '412 tâm sự thầm kín' },
+                { tag: '#QuaChoConTuoi18', count: '980 rương thời gian' },
+                { tag: '#DiSanGiaDinh', count: '730 kỷ vật gia tộc' },
+                { tag: '#GocAnDanh', count: '512 tâm sự thầm kín' },
               ].map((topic) => (
                 <div
                   key={topic.tag}
@@ -781,24 +947,6 @@ export default function ScreenFeed({
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Quick Pickup CTA */}
-          <div className="bg-gradient-to-br from-[#D96B43] to-[#B84A24] text-white rounded-2xl p-5 shadow-warm">
-            <Sparkles className="w-6 h-6 text-[#E5A93C] mb-2" />
-            <h3 className="font-serif text-lg font-bold mb-1.5">
-              Bạn có món quà muốn cất giữ an toàn?
-            </h3>
-            <p className="text-xs text-white/90 leading-relaxed mb-4">
-              Đặt lịch nhân viên đến tận nhà niêm phong kẹp chì, gắn chip NFC và bảo quản tại kho tiêu chuẩn 22°C.
-            </p>
-            <button
-              onClick={() => onNavigate('pickup')}
-              className="w-full py-2.5 rounded-xl bg-white text-[#D96B43] hover:bg-[#FAF6F0] font-semibold text-xs inline-flex items-center justify-center gap-2 shadow transition-colors"
-            >
-              <Truck className="w-4 h-4" />
-              <span>Đặt lịch gửi quà ngay</span>
-            </button>
           </div>
         </div>
       </div>

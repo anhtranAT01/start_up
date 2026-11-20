@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Package,
   ShieldCheck,
@@ -69,6 +69,20 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
   const [size, setSize] = useState('Hộp Vừa (35x25x15cm)');
   const [photo, setPhoto] = useState(SAMPLE_IMAGES[0].url);
   const [story, setStory] = useState('');
+  const pickupFileRef = useRef(null);
+
+  const handleUploadPickupPhoto = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setPhoto(reader.result);
+        showToast(`Đã tải ảnh kỷ vật "${file.name}" từ máy tính!`);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Step 2
   const [boxType, setBoxType] = useState(BOX_TYPES[0].name);
@@ -383,11 +397,36 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-2">
-                Tải lên ảnh chụp kỷ vật trước khi bàn giao (Biên bản đối chiếu)
-              </label>
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <label className="block text-xs font-semibold text-[#2C2523]">
+                  Tải lên ảnh chụp kỷ vật trước khi bàn giao (Biên bản đối chiếu)
+                </label>
+                <input
+                  ref={pickupFileRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUploadPickupPhoto}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => pickupFileRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-sm transition-colors"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Tải ảnh từ máy tính của bạn</span>
+                </button>
+              </div>
+              {photo && !SAMPLE_IMAGES.some((img) => img.url === photo) && (
+                <div className="mb-3 inline-flex items-center gap-3 p-2 rounded-xl bg-[#FAF6F0] border-2 border-[#D96B43]">
+                  <SafeImage src={photo} alt="Ảnh tải lên" className="w-20 h-16 object-cover rounded-lg" />
+                  <span className="text-xs font-semibold text-[#D96B43] pr-2">
+                    ✓ Đang dùng ảnh tải từ máy của bạn
+                  </span>
+                </div>
+              )}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {SAMPLE_IMAGES.map((img) => (
+                {SAMPLE_IMAGES.slice(0, 4).map((img) => (
                   <button
                     type="button"
                     key={img.url}

@@ -1,9 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Play, Pause, Volume2, VolumeX, Music } from 'lucide-react';
+import {
+  Sparkles,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Music,
+  Upload,
+  Camera,
+  X,
+  Check,
+  Link2,
+} from 'lucide-react';
 import { soundEngine } from '../utils/soundEngine';
+import { AVATAR_PRESETS } from '../data/mockData';
 
 export function SafeImage({ src, alt, className = '' }) {
   const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
   if (!src || failed) {
     return (
       <div
@@ -228,6 +246,211 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
       >
         {muted ? <VolumeX className="w-4 h-4 text-[#9B2C2C]" /> : <Volume2 className="w-4 h-4" />}
       </button>
+    </div>
+  );
+}
+
+export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
+  const [name, setName] = useState(user?.name || '');
+  const [bio, setBio] = useState(user?.bio || 'Yêu những mảnh ký ức bình dị.');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [avatar, setAvatar] = useState(user?.avatar || AVATAR_PRESETS[0]);
+  const [customUrl, setCustomUrl] = useState('');
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setAvatar(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleApplyUrl = () => {
+    if (customUrl.trim()) {
+      setAvatar(customUrl.trim());
+      setCustomUrl('');
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSaveProfile({
+      name: name.trim(),
+      bio: bio.trim(),
+      phone: phone.trim(),
+      avatar,
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-[#2C2523]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white border-2 border-[#E6DEC8] rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative my-auto">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#FAF6F0] hover:bg-[#E6DEC8] flex items-center justify-center text-[#2C2523]"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        <h3 className="font-serif text-xl font-bold text-[#2C2523]">
+          Đổi Ảnh Đại Diện & Hồ Sơ Cá Nhân
+        </h3>
+        <p className="text-xs text-[#6E6259] mt-0.5">
+          Tải ảnh trực tiếp từ máy tính của bạn hoặc chọn từ bộ sưu tập chân dung hoài niệm.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+          {/* Current Avatar Preview + Upload from PC */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-[#FAF6F0] border border-[#E6DEC8]">
+            <div className="relative group shrink-0">
+              <SafeImage
+                src={avatar}
+                alt={name}
+                className="w-20 h-20 rounded-full object-cover border-4 border-[#E5A93C] shadow-md"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#D96B43] text-white flex items-center justify-center shadow hover:bg-[#B84A24]"
+                title="Tải ảnh từ máy"
+              >
+                <Camera className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="flex-1 text-center sm:text-left space-y-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-sm transition-colors"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Tải ảnh đại diện từ máy tính</span>
+              </button>
+              <div className="text-[11px] text-[#6E6259]">
+                Hỗ trợ JPG, PNG, WebP hoặc GIF trực tiếp từ thiết bị của bạn.
+              </div>
+            </div>
+          </div>
+
+          {/* Preset Avatars */}
+          <div>
+            <label className="block text-xs font-semibold text-[#7C4D2B] mb-2">
+              Hoặc chọn nhanh ảnh đại diện mẫu:
+            </label>
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              {AVATAR_PRESETS.map((presetUrl, i) => (
+                <button
+                  type="button"
+                  key={i}
+                  onClick={() => setAvatar(presetUrl)}
+                  className={`relative rounded-full overflow-hidden w-11 h-11 border-2 transition-all mx-auto ${
+                    avatar === presetUrl
+                      ? 'border-[#D96B43] scale-110 ring-2 ring-[#D96B43]/30'
+                      : 'border-[#E6DEC8] hover:border-[#7C4D2B]'
+                  }`}
+                >
+                  <SafeImage
+                    src={presetUrl}
+                    alt={`Avatar ${i + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Paste URL option */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Link2 className="w-3.5 h-3.5 text-[#6E6259] absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={customUrl}
+                onChange={(e) => setCustomUrl(e.target.value)}
+                placeholder="Hoặc dán đường dẫn URL ảnh bất kỳ..."
+                className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleApplyUrl}
+              className="px-3 py-1.5 rounded-xl bg-[#FAF6F0] hover:bg-[#E6DEC8] border border-[#E6DEC8] text-xs font-semibold text-[#7C4D2B]"
+            >
+              Áp dụng
+            </button>
+          </div>
+
+          {/* Profile Info Fields */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E6DEC8]">
+            <div>
+              <label className="block text-xs font-semibold text-[#2C2523] mb-1">
+                Tên hiển thị *
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs font-medium focus:outline-none focus:border-[#D96B43]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[#2C2523] mb-1">
+                Số điện thoại
+              </label>
+              <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs font-medium focus:outline-none focus:border-[#D96B43]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-[#2C2523] mb-1">
+              Châm ngôn / Giới thiệu ngắn dưới tên
+            </label>
+            <input
+              type="text"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="VD: Sinh viên ĐH Ngoại Thương • Yêu những lá thư tay"
+              className="w-full px-3.5 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+            />
+          </div>
+
+          <div className="pt-3 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-full border border-[#E6DEC8] text-xs font-semibold text-[#6E6259]"
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-gradient-to-r from-[#D96B43] to-[#B84A24] text-white text-xs font-bold shadow"
+            >
+              <Check className="w-4 h-4" />
+              <span>Lưu Thay Đổi Hồ Sơ</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

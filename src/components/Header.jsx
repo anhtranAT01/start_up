@@ -13,11 +13,13 @@ import {
   LogOut,
   ChevronDown,
   Briefcase,
+  Camera,
 } from 'lucide-react';
 import { SafeImage } from './SharedUI';
 
 export default function Header({
   user,
+  onEditProfile,
   onLogout,
   searchQuery,
   setSearchQuery,
@@ -215,6 +217,16 @@ export default function Header({
                 </div>
 
                 <div className="flex flex-col gap-1.5">
+                  <button
+                    onClick={() => {
+                      setShowAccountMenu(false);
+                      onEditProfile && onEditProfile();
+                    }}
+                    className="w-full py-2 rounded-xl bg-[#D96B43]/10 hover:bg-[#D96B43]/20 text-xs font-semibold text-[#D96B43] flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>Đổi ảnh đại diện & Hồ sơ</span>
+                  </button>
                   {!isAdmin && (
                     <button
                       onClick={() => {

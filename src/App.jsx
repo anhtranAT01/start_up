@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { CheckCircle2, AlertCircle, X } from 'lucide-react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { CheckCircle2, AlertCircle, X, Cloud, RefreshCw } from 'lucide-react';
 import {
   INITIAL_ACCOUNTS,
   INITIAL_POSTS,
@@ -18,22 +18,37 @@ import ScreenVault from './components/ScreenVault';
 import ScreenTimeCapsule from './components/ScreenTimeCapsule';
 import ScreenPricing from './components/ScreenPricing';
 import ScreenDispatch from './components/ScreenDispatch';
+import { AvatarProfileModal } from './components/SharedUI';
 import { soundEngine } from './utils/soundEngine';
+import {
+  loadLocalCache,
+  fetchBackendState,
+  pushBackendState,
+  loadSessionUser,
+  saveSessionUser,
+} from './utils/apiClient';
 
 export default function App() {
-  const [accounts, setAccounts] = useState(INITIAL_ACCOUNTS);
-  const [user, setUser] = useState(null);
+  const cached = loadLocalCache();
+
+  const [accounts, setAccounts] = useState(() => cached?.accounts || INITIAL_ACCOUNTS);
+  const [user, setUser] = useState(() => loadSessionUser());
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const [activeScreen, setActiveScreen] = useState('feed');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [vaultItems, setVaultItems] = useState(INITIAL_VAULT_ITEMS);
-  const [capsules, setCapsules] = useState(INITIAL_TIME_CAPSULES);
-  const [reminders, setReminders] = useState(INITIAL_REMINDERS);
-  const [dispatchOrders, setDispatchOrders] = useState(INITIAL_DISPATCH_ORDERS);
+  const [posts, setPosts] = useState(() => cached?.posts || INITIAL_POSTS);
+  const [vaultItems, setVaultItems] = useState(() => cached?.vaultItems || INITIAL_VAULT_ITEMS);
+  const [capsules, setCapsules] = useState(() => cached?.capsules || INITIAL_TIME_CAPSULES);
+  const [reminders, setReminders] = useState(() => cached?.reminders || INITIAL_REMINDERS);
+  const [dispatchOrders, setDispatchOrders] = useState(
+    () => cached?.dispatchOrders || INITIAL_DISPATCH_ORDERS
+  );
 
+  const [syncStatus, setSyncStatus] = useState('synced'); // 'syncing' | 'synced' | 'local'
   const [toast, setToast] = useState(null);
+  const isInitialMount = useRef(true);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type, id: Date.now() });
@@ -41,6 +56,64 @@ export default function App() {
       setToast((prev) => (prev && prev.message === message ? null : prev));
     }, 3600);
   }, []);
+
+  // 1. Fetch state from Backend API on mount
+  useEffect(() => {
+    let mounted = true;
+    fetchBackendState()
+      .then((remote) => {
+        if (!mounted || !remote) return;
+        const local = loadLocalCache();
+        // If local cache does not exist yet, hydrate from backend
+        if (!local || (remote.updatedAt && (!local.updatedAt || remote.updatedAt >= local.updatedAt))) {
+          if (remote.accounts) setAccounts(remote.accounts);
+          if (remote.posts) setPosts(remote.posts);
+          if (remote.vaultItems) setVaultItems(remote.vaultItems);
+          if (remote.capsules) setCapsules(remote.capsules);
+          if (remote.reminders) setReminders(remote.reminders);
+          if (remote.dispatchOrders) setDispatchOrders(remote.dispatchOrders);
+        }
+        setSyncStatus('synced');
+      })
+      .catch(() => {
+        if (mounted) setSyncStatus('local');
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // 2. Push state changes to Backend API + localStorage automatically
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const payload = {
+      accounts,
+      posts,
+      vaultItems,
+      capsules,
+      reminders,
+      dispatchOrders,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setSyncStatus('syncing');
+    const timer = setTimeout(() => {
+      pushBackendState(payload)
+        .then(() => setSyncStatus('synced'))
+        .catch(() => setSyncStatus('local'));
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [accounts, posts, vaultItems, capsules, reminders, dispatchOrders]);
+
+  // 3. Persist logged-in user session
+  useEffect(() => {
+    saveSessionUser(user);
+  }, [user]);
 
   const handleLoginSuccess = (acc) => {
     soundEngine.stop();
@@ -70,13 +143,45 @@ export default function App() {
     setReminders((prev) => [starterReminder, ...prev]);
 
     setActiveScreen('feed');
-    showToast(`Chào mừng ${newAccount.name}! Tài khoản khách hàng của bạn đã sẵn sàng.`);
+    showToast(`Chào mừng ${newAccount.name}! Tài khoản của bạn đã được lưu vào Backend.`);
   };
 
   const handleLogout = () => {
     soundEngine.stop();
     setUser(null);
     setActiveScreen('feed');
+  };
+
+  const handleSaveProfile = ({ name, bio, phone, avatar }) => {
+    setUser((prev) => ({
+      ...prev,
+      name,
+      bio,
+      phone,
+      avatar,
+    }));
+
+    setAccounts((prev) =>
+      prev.map((acc) =>
+        acc.email === user.email ? { ...acc, name, bio, phone, avatar } : acc
+      )
+    );
+
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.authorEmail === user.email && !p.isAnonymous
+          ? {
+              ...p,
+              author: name,
+              authorRole: bio || p.authorRole,
+              avatar,
+            }
+          : p
+      )
+    );
+
+    setShowProfileModal(false);
+    showToast('Đã lưu ảnh đại diện và hồ sơ mới vào Backend!');
   };
 
   const handleCreateOrder = (newVaultItem, newDispatchOrder) => {
@@ -233,6 +338,7 @@ export default function App() {
     <div className="min-h-screen bg-[#FAF6F0] text-[#2C2523] flex flex-col pb-20 lg:pb-10">
       <Header
         user={user}
+        onEditProfile={() => setShowProfileModal(true)}
         onLogout={handleLogout}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -261,6 +367,7 @@ export default function App() {
           {safeActiveScreen === 'feed' && (
             <ScreenFeed
               user={user}
+              onEditProfile={() => setShowProfileModal(true)}
               posts={posts}
               setPosts={setPosts}
               vaultItems={userVaultItems}
@@ -321,6 +428,34 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* Live Backend Sync Badge */}
+      <div className="fixed bottom-16 lg:bottom-4 left-4 z-30 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#E6DEC8] shadow-sm text-[11px] font-medium text-[#6E6259]">
+        {syncStatus === 'syncing' ? (
+          <>
+            <RefreshCw className="w-3.5 h-3.5 text-[#D96B43] animate-spin" />
+            <span>Đang đồng bộ Backend...</span>
+          </>
+        ) : syncStatus === 'synced' ? (
+          <>
+            <Cloud className="w-3.5 h-3.5 text-[#3B7A57]" />
+            <span className="text-[#3B7A57] font-semibold">Đã đồng bộ Backend API</span>
+          </>
+        ) : (
+          <>
+            <Cloud className="w-3.5 h-3.5 text-[#7C4D2B]" />
+            <span>Lưu trữ Cloud & Local</span>
+          </>
+        )}
+      </div>
+
+      {showProfileModal && (
+        <AvatarProfileModal
+          user={user}
+          onSaveProfile={handleSaveProfile}
+          onClose={() => setShowProfileModal(false)}
+        />
+      )}
 
       {/* Global Toast Notification */}
       {toast && (
