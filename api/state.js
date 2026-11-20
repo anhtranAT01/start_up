@@ -51,11 +51,16 @@ function getSeed() {
 async function loadFromSupabase() {
   if (!supabase) return null;
   try {
-    const { data, error } = await supabase
+    const fetchPromise = supabase
       .from('app_state')
       .select('payload, updated_at')
       .eq('id', 'main')
       .maybeSingle();
+
+    const { data, error } = await Promise.race([
+      fetchPromise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase load timeout')), 2500)),
+    ]);
 
     if (!error && data && data.payload) {
       return {
@@ -72,7 +77,7 @@ async function loadFromSupabase() {
       return seed;
     }
   } catch (err) {
-    console.error('Supabase load error:', err);
+    console.error('Supabase load error/timeout:', err.message);
   }
   return null;
 }
@@ -80,7 +85,7 @@ async function loadFromSupabase() {
 async function saveToSupabase(payload) {
   if (!supabase) return false;
   try {
-    const { error } = await supabase.from('app_state').upsert(
+    const savePromise = supabase.from('app_state').upsert(
       {
         id: 'main',
         payload,
@@ -88,9 +93,15 @@ async function saveToSupabase(payload) {
       },
       { onConflict: 'id' }
     );
+
+    const { error } = await Promise.race([
+      savePromise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase save timeout')), 2500)),
+    ]);
+
     return !error;
   } catch (err) {
-    console.error('Supabase save error:', err);
+    console.error('Supabase save error/timeout:', err.message);
     return false;
   }
 }

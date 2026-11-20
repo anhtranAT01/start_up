@@ -56,58 +56,82 @@ export function saveSessionUser(user) {
 }
 
 export async function fetchBackendState() {
-  // 1. If Supabase is configured on client, try fetching from Supabase first
+  // 1. If Supabase is configured on client, try fetching from Supabase with timeout
   if (hasSupabaseConfig()) {
     try {
-      const supaData = await fetchSupabaseState();
+      const supaData = await Promise.race([
+        fetchSupabaseState(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), 3000)),
+      ]);
       if (supaData) {
         saveLocalCache(supaData);
         return supaData;
       }
     } catch (err) {
-      console.warn('Direct Supabase fetch failed, falling back to /api/state:', err);
+      console.warn('Direct Supabase fetch failed/timeout, falling back to /api/state:', err);
     }
   }
 
-  // 2. Fallback to /api/state (which also checks Supabase on server if configured in Vercel)
+  // 2. Fallback to /api/state with 4s timeout
   const endpoint = getApiEndpoint();
-  const res = await fetch(endpoint, {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    saveLocalCache(data);
+    return data;
+  } catch (err) {
+    clearTimeout(timer);
+    const local = loadLocalCache();
+    if (local) return local;
+    throw err;
   }
-  const data = await res.json();
-  saveLocalCache(data);
-  return data;
 }
 
 export async function pushBackendState(state) {
   saveLocalCache(state);
 
-  // 1. If Supabase is configured directly on client, save to Supabase
+  // 1. If Supabase is configured directly on client, save with timeout
   if (hasSupabaseConfig()) {
     try {
-      await saveSupabaseState(state);
+      await Promise.race([
+        saveSupabaseState(state),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase save timeout')), 3000)),
+      ]);
     } catch (err) {
       console.warn('Direct Supabase save failed:', err);
     }
   }
 
-  // 2. Also push to /api/state
+  // 2. Also push to /api/state with 4s timeout
   const endpoint = getApiEndpoint();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+
   try {
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(state),
+      signal: controller.signal,
     });
+    clearTimeout(timer);
     if (res.ok) {
       return await res.json();
     }
   } catch (err) {
-    console.warn('Push to /api/state failed (handled by local cache/Supabase):', err);
+    clearTimeout(timer);
+    console.warn('Push to /api/state failed/timeout (handled by local cache):', err);
   }
 
   return { ok: true, updatedAt: state.updatedAt };

@@ -54,6 +54,8 @@ export default function App() {
   const [syncStatus, setSyncStatus] = useState('synced'); // 'syncing' | 'synced' | 'local'
   const [toast, setToast] = useState(null);
   const isInitialMount = useRef(true);
+  const isRemoteUpdate = useRef(false);
+  const lastPushedSignature = useRef('');
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type, id: Date.now() });
@@ -78,6 +80,7 @@ export default function App() {
         }
 
         if (!local || (!remote.isSeed && remote.updatedAt && (!local.updatedAt || remote.updatedAt >= local.updatedAt))) {
+          isRemoteUpdate.current = true;
           if (remote.accounts) setAccounts(remote.accounts);
           if (remote.posts) setPosts(remote.posts);
           if (remote.vaultItems) setVaultItems(remote.vaultItems);
@@ -102,6 +105,25 @@ export default function App() {
       return;
     }
 
+    if (isRemoteUpdate.current) {
+      isRemoteUpdate.current = false;
+      return;
+    }
+
+    const currentSig = JSON.stringify({
+      accs: accounts.map((a) => `${a.id}:${a.name}:${a.role}`),
+      psts: posts.map((p) => `${p.id}:${p.candles}:${p.comments?.length}`),
+      vlt: vaultItems.map((v) => `${v.id}:${v.status}`),
+      caps: capsules.length,
+      rems: reminders.length,
+      orders: dispatchOrders.map((o) => `${o.id}:${o.step}`),
+    });
+
+    if (lastPushedSignature.current === currentSig) {
+      return;
+    }
+    lastPushedSignature.current = currentSig;
+
     const payload = {
       accounts,
       posts,
@@ -114,13 +136,23 @@ export default function App() {
     };
 
     setSyncStatus('syncing');
+
+    // Safety fallback: never allow syncing badge to spin longer than 1.5s
+    const safetyTimer = setTimeout(() => {
+      setSyncStatus((prev) => (prev === 'syncing' ? 'synced' : prev));
+    }, 1500);
+
     const timer = setTimeout(() => {
       pushBackendState(payload)
         .then(() => setSyncStatus('synced'))
-        .catch(() => setSyncStatus('local'));
-    }, 300);
+        .catch(() => setSyncStatus('local'))
+        .finally(() => clearTimeout(safetyTimer));
+    }, 400);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(safetyTimer);
+    };
   }, [accounts, posts, vaultItems, capsules, reminders, dispatchOrders]);
 
   // 3. Persist logged-in user session
@@ -132,6 +164,7 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = subscribeToRealtimeSync((remote) => {
       if (!remote) return;
+      isRemoteUpdate.current = true;
       if (remote.accounts) setAccounts(remote.accounts);
       if (remote.posts) setPosts(remote.posts);
       if (remote.vaultItems) setVaultItems(remote.vaultItems);
