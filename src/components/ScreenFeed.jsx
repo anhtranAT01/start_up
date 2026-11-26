@@ -293,7 +293,7 @@ export default function ScreenFeed({
                 Moclant — Nơi đóa Hoa Mộc Lan ấp ủ những ký ức vượt thời gian
               </h1>
               <p className="text-xs sm:text-sm text-[#EAE1D4]/90 mt-1 max-w-2xl">
-                Lấy cảm hứng từ vẻ đẹp thanh cao, bền bỉ của loài Hoa Mộc Lan trên nền Xanh Olive (#606E5A) và Vàng Champagne (#C9A166), Moclant gìn giữ trọn vẹn từng kỷ vật và câu chuyện của bạn.
+                Lấy cảm hứng từ vẻ đẹp thanh cao, bền bỉ của loài Hoa Mộc Lan, Moclant trân trọng đồng hành cùng bạn gìn giữ trọn vẹn từng kỷ vật và câu chuyện quý giá qua năm tháng.
               </p>
             </div>
           </div>
@@ -840,35 +840,16 @@ export default function ScreenFeed({
             <p className="text-xs text-[#2C3329] leading-relaxed bg-[#F6F2EB] p-3 rounded-xl border border-[#D6BD95]/60">
               Đóa <strong>Hoa Mộc Lan (Moclant)</strong> mang sắc trắng kem nhẹ nhàng ôm lấy nhụy vàng Champagne và cành lá xanh Olive, biểu trưng cho những ký ức được bảo vệ nguyên vẹn qua năm tháng.
             </p>
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#748067] mb-2">
-                Bảng màu nhận diện Moclant:
+            <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#F6F2EB] to-[#EAE1D4]/70 border border-[#D6BD95] space-y-1.5">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#606E5A]">
+                <Sparkles className="w-3.5 h-3.5 text-[#C9A166]" />
+                <span>Lời Tri Ân Gửi Tới Quý Khách Hàng</span>
               </div>
-              <div className="grid grid-cols-3 gap-1.5 text-[10px]">
-                <div className="p-1.5 rounded-lg bg-[#606E5A] text-white font-semibold text-center shadow-sm">
-                  #606E5A
-                  <div className="text-[9px] opacity-85 font-normal">Olive Green</div>
-                </div>
-                <div className="p-1.5 rounded-lg bg-[#C9A166] text-white font-semibold text-center shadow-sm">
-                  #C9A166
-                  <div className="text-[9px] opacity-90 font-normal">Champagne</div>
-                </div>
-                <div className="p-1.5 rounded-lg bg-[#748067] text-white font-semibold text-center shadow-sm">
-                  #748067
-                  <div className="text-[9px] opacity-85 font-normal">Sage Green</div>
-                </div>
-                <div className="p-1.5 rounded-lg bg-[#F6F2EB] text-[#606E5A] border border-[#D6BD95] font-semibold text-center">
-                  #F6F2EB
-                  <div className="text-[9px] opacity-80 font-normal">Warm Ivory</div>
-                </div>
-                <div className="p-1.5 rounded-lg bg-[#EAE1D4] text-[#606E5A] border border-[#D6BD95] font-semibold text-center">
-                  #EAE1D4
-                  <div className="text-[9px] opacity-80 font-normal">Soft Beige</div>
-                </div>
-                <div className="p-1.5 rounded-lg bg-[#D6BD95] text-[#2C3329] font-semibold text-center">
-                  #D6BD95
-                  <div className="text-[9px] opacity-85 font-normal">Muted Gold</div>
-                </div>
+              <p className="text-xs text-[#2C3329] italic leading-relaxed">
+                “Cảm ơn bạn đã tin tưởng trao gửi những mảnh ký ức và kỷ vật vô giá của cuộc đời mình cho <strong>Moclant</strong>. Mỗi chiếc hộp được niêm phong là một câu chuyện mà chúng tôi nguyện nâng niu và gìn giữ bằng cả trái tim, như đóa hoa mộc lan luôn dịu dàng nở rộ qua năm tháng.”
+              </p>
+              <div className="text-[11px] font-semibold text-[#748067] text-right pt-0.5">
+                — Đội ngũ Moclant • Cửa Hàng Ký Ức
               </div>
             </div>
           </div>

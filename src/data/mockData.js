@@ -146,7 +146,7 @@ export const INITIAL_VAULT_ITEMS = [
     isTimeCapsule: false,
     lastInspected: 'Vừa kiểm định',
     coverImage: '/moclant-logo.jpg',
-    story: 'Phiên bản rương kỷ vật đặc biệt khắc nổi biểu tượng Hoa Mộc Lan Moclant bằng vàng Champagne (#C9A166) trên nền lá xanh Olive (#606E5A), lưu giữ cành mộc lan ép khô và thư tay.',
+    story: 'Phiên bản rương kỷ vật đặc biệt khắc nổi biểu tượng Hoa Mộc Lan Moclant ánh vàng Champagne trên nền lá xanh Olive thanh lịch, lưu giữ cành mộc lan ép khô và thư tay.',
     digitalSpace: {
       audioTitle: 'Giai điệu Mộc Lan Mùa Xuân — Bản thu piano mộc.mp3',
       audioDuration: '02:10',
@@ -334,9 +334,9 @@ export const INITIAL_POSTS = [
       id: 'MK-8899',
       label: '✓ Biểu tượng chính thức Moclant • Hoa Mộc Lan Lưu Giữ Thời Gian (#MK-8899)',
     },
-    hashtags: ['#Moclant', '#HoaMocLan', '#BieuTuongKyUc', '#OliveGreen', '#ChampagneGold'],
+    hashtags: ['#Moclant', '#HoaMocLan', '#BieuTuongKyUc', '#TriAnKhachHang'],
     content:
-      'Vì sao chúng mình chọn đóa Hoa Mộc Lan (Magnolia) làm biểu tượng linh hồn cho Moclant — Cửa Hàng Ký Ức?\n\nHoa mộc lan là một trong những loài hoa cổ xưa nhất trên Trái Đất, kiên cường nở rộ giữa tiết trời giao mùa se lạnh. Trong logo của Moclant, từng cánh hoa trắng kem ấm áp (#F6F2EB) ôm lấy nhụy vàng Champagne (#C9A166) tượng trưng cho những mảnh ký ức quý giá được nâng niu. Nhánh lá xanh Olive (#606E5A) và xanh Sage (#748067) vươn lên mềm mại chính là lời cam kết bảo quản bền bỉ, để năm tháng có đi qua thì kỷ vật của bạn vẫn thanh khiết và vẹn nguyên như thuở ban đầu.',
+      'Vì sao chúng mình chọn đóa Hoa Mộc Lan (Magnolia) làm biểu tượng linh hồn cho Moclant — Cửa Hàng Ký Ức?\n\nHoa mộc lan là một trong những loài hoa cổ xưa nhất trên Trái Đất, kiên cường nở rộ giữa tiết trời giao mùa se lạnh. Trong logo của Moclant, từng cánh hoa trắng kem ấm áp ôm lấy nhụy vàng Champagne tượng trưng cho những mảnh ký ức quý giá được nâng niu. Nhánh lá xanh Olive vươn lên mềm mại chính là lời cam kết bảo quản bền bỉ và lời cảm ơn chân thành gửi tới từng khách hàng đã tin tưởng trao gửi kỷ vật cho Moclant.',
     image: '/moclant-logo.jpg',
     audio: {
       title: 'Tâm sự ngày ra mắt biểu tượng Hoa Mộc Lan Moclant.mp3',
@@ -348,7 +348,7 @@ export const INITIAL_POSTS = [
       {
         id: 'cm-1',
         author: 'Đức Minh (KTS)',
-        text: 'Dưới góc nhìn kiến trúc và mỹ thuật, phối màu Xanh Olive (#606E5A) đi cùng Vàng Champagne (#C9A166) và nền Trắng Kem của logo Moclant sang trọng, tĩnh tại và có chiều sâu hoài niệm thực sự!',
+        text: 'Dưới góc nhìn kiến trúc và mỹ thuật, sắc xanh Olive đi cùng ánh vàng Champagne và nền trắng kem của đóa hoa mộc lan Moclant thật sự sang trọng, tĩnh tại và có chiều sâu hoài niệm!',
         time: '15 phút trước',
       },
       {
