@@ -4,8 +4,8 @@
 
 @layer base {
   body {
-    background-color: #FAF6F0;
-    color: #2C2523;
+    background-color: #F6F2EB;
+    color: #2C3329;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 
@@ -14,20 +14,20 @@
   }
 }
 
-/* Custom subtle scrollbars */
+/* Custom subtle scrollbars - Moclant Palette */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF6F0;
+  background: #F6F2EB;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D6CBB3;
+  background: #D6BD95;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #7C4D2B;
+  background: #606E5A;
 }
 
 @keyframes wavePulse {

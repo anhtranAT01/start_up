@@ -82,7 +82,7 @@ export default function ScreenVault({
 
   const getStatusBadge = (item) => {
     if (item.status === 'stored') {
-      return 'bg-[#3B7A57]/15 text-[#3B7A57] border-[#3B7A57]/30';
+      return 'bg-[#606E5A]/15 text-[#606E5A] border-[#606E5A]/30';
     }
     if (item.status === 'picking_up') {
       return 'bg-[#2B6CB0]/15 text-[#2B6CB0] border-[#2B6CB0]/30';
@@ -90,7 +90,7 @@ export default function ScreenVault({
     if (item.status === 'locked') {
       return 'bg-[#9B2C2C]/15 text-[#9B2C2C] border-[#9B2C2C]/30';
     }
-    return 'bg-[#E5A93C]/20 text-[#7C4D2B] border-[#E5A93C]/50';
+    return 'bg-[#C9A166]/20 text-[#606E5A] border-[#C9A166]/50';
   };
 
   const openNfcModal = (item) => {
@@ -224,18 +224,18 @@ export default function ScreenVault({
   return (
     <div className="space-y-6">
       {/* Account Sync Banner */}
-      <div className="bg-white border border-[#E6DEC8] rounded-2xl p-4 sm:p-5 shadow-warm flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white border border-[#D6BD95] rounded-2xl p-4 sm:p-5 shadow-warm flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#7C4D2B] text-[#E5A93C] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#606E5A] text-[#C9A166] flex items-center justify-center">
             <UserCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-serif text-lg font-bold text-[#2C2523]">
+            <h2 className="font-serif text-lg font-bold text-[#2C3329]">
               Kho Kỷ Vật Của {user.name}
             </h2>
-            <p className="text-xs text-[#6E6259]">
+            <p className="text-xs text-[#748067]">
               Tài khoản: <strong>{user.email}</strong> • Gói đang kích hoạt:{' '}
-              <strong className="text-[#D96B43]">{user.tierName}</strong>
+              <strong className="text-[#C9A166]">{user.tierName}</strong>
             </p>
           </div>
         </div>
@@ -248,48 +248,48 @@ export default function ScreenVault({
 
       {/* 4 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E6DEC8] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-[#7C4D2B]/10 text-[#7C4D2B] flex items-center justify-center shrink-0">
+        <div className="bg-white border border-[#D6BD95] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-[#606E5A]/10 text-[#606E5A] flex items-center justify-center shrink-0">
             <Package className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs text-[#6E6259]">Tổng hộp quà của tài khoản</div>
-            <div className="font-serif text-xl font-bold text-[#2C2523]">
+            <div className="text-xs text-[#748067]">Tổng hộp quà của tài khoản</div>
+            <div className="font-serif text-xl font-bold text-[#2C3329]">
               {String(vaultItems.length).padStart(2, '0')} Hộp
             </div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#E6DEC8] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-[#D96B43]/10 text-[#D96B43] flex items-center justify-center shrink-0">
+        <div className="bg-white border border-[#D6BD95] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-[#C9A166]/10 text-[#C9A166] flex items-center justify-center shrink-0">
             <HardDrive className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs text-[#6E6259]">Dung lượng số theo gói</div>
-            <div className="font-serif text-xl font-bold text-[#2C2523]">
+            <div className="text-xs text-[#748067]">Dung lượng số theo gói</div>
+            <div className="font-serif text-xl font-bold text-[#2C3329]">
               {user.usedStorageGB || 1.2} GB / {user.maxStorageGB || 100} GB
             </div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#E6DEC8] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-[#3B7A57]/10 text-[#3B7A57] flex items-center justify-center shrink-0">
+        <div className="bg-white border border-[#D6BD95] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-[#606E5A]/10 text-[#606E5A] flex items-center justify-center shrink-0">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs text-[#6E6259]">Tình trạng bảo quản thực tế</div>
-            <div className="text-sm font-bold text-[#3B7A57]">100% An toàn</div>
-            <div className="text-[11px] text-[#6E6259]">Kiểm tra 2 giờ trước</div>
+            <div className="text-xs text-[#748067]">Tình trạng bảo quản thực tế</div>
+            <div className="text-sm font-bold text-[#606E5A]">100% An toàn</div>
+            <div className="text-[11px] text-[#748067]">Kiểm tra 2 giờ trước</div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#E6DEC8] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-[#E5A93C]/20 text-[#7C4D2B] flex items-center justify-center shrink-0">
-            <Award className="w-6 h-6 text-[#D96B43]" />
+        <div className="bg-white border border-[#D6BD95] rounded-2xl p-4 shadow-warm flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-[#C9A166]/20 text-[#606E5A] flex items-center justify-center shrink-0">
+            <Award className="w-6 h-6 text-[#C9A166]" />
           </div>
           <div>
-            <div className="text-xs text-[#6E6259]">Bảo hiểm đang kích hoạt</div>
-            <div className="font-serif text-xl font-bold text-[#2C2523]">
+            <div className="text-xs text-[#748067]">Bảo hiểm đang kích hoạt</div>
+            <div className="font-serif text-xl font-bold text-[#2C3329]">
               {formatVND(totalInsurance)}
             </div>
           </div>
@@ -297,15 +297,15 @@ export default function ScreenVault({
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white border border-[#E6DEC8] rounded-2xl p-4 shadow-warm flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="bg-white border border-[#D6BD95] rounded-2xl p-4 shadow-warm flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-4 h-4 text-[#6E6259] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#748067] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Tìm theo tên hoặc mã hộp (#MK-1024)..."
-            className="w-full pl-10 pr-4 py-2 rounded-full bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+            className="w-full pl-10 pr-4 py-2 rounded-full bg-[#F6F2EB] border border-[#D6BD95] text-xs focus:outline-none focus:border-[#C9A166]"
           />
         </div>
 
@@ -316,8 +316,8 @@ export default function ScreenVault({
               onClick={() => setStatusFilter(f.id)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-colors ${
                 statusFilter === f.id
-                  ? 'bg-[#7C4D2B] text-white border-[#7C4D2B]'
-                  : 'bg-[#FAF6F0] text-[#6E6259] border-[#E6DEC8] hover:border-[#7C4D2B]'
+                  ? 'bg-[#606E5A] text-white border-[#606E5A]'
+                  : 'bg-[#F6F2EB] text-[#748067] border-[#D6BD95] hover:border-[#606E5A]'
               }`}
             >
               {f.label}
@@ -328,18 +328,18 @@ export default function ScreenVault({
 
       {/* Vault Item Cards */}
       {filteredItems.length === 0 ? (
-        <div className="bg-white border border-[#E6DEC8] rounded-2xl p-10 text-center space-y-3 shadow-warm">
-          <Package className="w-12 h-12 text-[#D96B43] mx-auto opacity-80" />
-          <h3 className="font-serif text-xl font-bold text-[#2C2523]">
+        <div className="bg-white border border-[#D6BD95] rounded-2xl p-10 text-center space-y-3 shadow-warm">
+          <Package className="w-12 h-12 text-[#C9A166] mx-auto opacity-80" />
+          <h3 className="font-serif text-xl font-bold text-[#2C3329]">
             Chưa có hộp kỷ vật nào trong danh mục này
           </h3>
-          <p className="text-xs text-[#6E6259] max-w-md mx-auto">
+          <p className="text-xs text-[#748067] max-w-md mx-auto">
             Hãy đặt lịch để nhân viên Cửa Hàng Ký Ức đến tận nơi nhận quà, niêm phong kẹp chì và khởi tạo Không gian Ký ức Số cho tài khoản <strong>{user.name}</strong>.
           </p>
           {onNavigate && (
             <button
               onClick={() => onNavigate('pickup')}
-              className="px-5 py-2.5 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow"
+              className="px-5 py-2.5 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-bold shadow"
             >
               + Đặt lịch gửi kỷ vật đầu tiên
             </button>
@@ -350,17 +350,17 @@ export default function ScreenVault({
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm hover:shadow-warm-lg transition-shadow"
+              className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm hover:shadow-warm-lg transition-shadow"
             >
               <div className="flex flex-col lg:flex-row gap-5">
                 {/* Photo */}
-                <div className="w-full lg:w-56 h-44 rounded-xl overflow-hidden border border-[#E6DEC8] shrink-0 relative">
+                <div className="w-full lg:w-56 h-44 rounded-xl overflow-hidden border border-[#D6BD95] shrink-0 relative">
                   <SafeImage
                     src={item.coverImage}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
-                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-[#2C2523]/80 text-white text-xs font-bold backdrop-blur-sm">
+                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-[#2C3329]/80 text-white text-xs font-bold backdrop-blur-sm">
                     #{item.id}
                   </span>
                 </div>
@@ -370,10 +370,10 @@ export default function ScreenVault({
                   <div>
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
-                        <h3 className="font-serif text-xl font-bold text-[#2C2523]">
+                        <h3 className="font-serif text-xl font-bold text-[#2C3329]">
                           {item.name}
                         </h3>
-                        <div className="text-xs text-[#6E6259] mt-0.5">
+                        <div className="text-xs text-[#748067] mt-0.5">
                           Chủ sở hữu: <strong>{item.ownerName || user.name}</strong> • {item.category} • {item.boxType}
                         </div>
                       </div>
@@ -386,22 +386,22 @@ export default function ScreenVault({
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#2C2523]/85 mt-2.5 leading-relaxed">
+                    <p className="text-xs text-[#2C3329]/85 mt-2.5 leading-relaxed">
                       {item.story}
                     </p>
 
                     <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 text-xs">
-                      <div className="flex items-center gap-1.5 text-[#7C4D2B] bg-[#FAF6F0] px-3 py-2 rounded-xl border border-[#E6DEC8]/70 sm:col-span-2">
-                        <MapPin className="w-4 h-4 text-[#D96B43] shrink-0" />
+                      <div className="flex items-center gap-1.5 text-[#606E5A] bg-[#F6F2EB] px-3 py-2 rounded-xl border border-[#D6BD95]/70 sm:col-span-2">
+                        <MapPin className="w-4 h-4 text-[#C9A166] shrink-0" />
                         <span className="truncate font-medium">{item.location}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-[#6E6259] bg-[#FAF6F0] px-3 py-2 rounded-xl border border-[#E6DEC8]/70">
-                        <Calendar className="w-4 h-4 text-[#7C4D2B] shrink-0" />
+                      <div className="flex items-center gap-1.5 text-[#748067] bg-[#F6F2EB] px-3 py-2 rounded-xl border border-[#D6BD95]/70">
+                        <Calendar className="w-4 h-4 text-[#606E5A] shrink-0" />
                         <span>
                           {item.sentDate} → <strong>{item.expiryDate}</strong>
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-[#3B7A57] bg-[#3B7A57]/10 px-3 py-2 rounded-xl border border-[#3B7A57]/20 font-semibold">
+                      <div className="flex items-center gap-2 text-[#606E5A] bg-[#606E5A]/10 px-3 py-2 rounded-xl border border-[#606E5A]/20 font-semibold">
                         <Thermometer className="w-3.5 h-3.5" /> {item.sensorTemp}
                         <Droplets className="w-3.5 h-3.5 ml-1" /> {item.sensorHumidity}
                       </div>
@@ -409,10 +409,10 @@ export default function ScreenVault({
                   </div>
 
                   {/* 5 Required Action Buttons */}
-                  <div className="mt-4 pt-3.5 border-t border-[#E6DEC8] flex flex-wrap items-center gap-2">
+                  <div className="mt-4 pt-3.5 border-t border-[#D6BD95] flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => openNfcModal(item)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gradient-to-r from-[#D96B43] to-[#B84A24] hover:from-[#B84A24] hover:to-[#9B3B1B] text-white text-xs font-semibold shadow-sm transition-all"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gradient-to-r from-[#C9A166] to-[#B38B50] hover:from-[#B38B50] hover:to-[#9A7540] text-white text-xs font-semibold shadow-sm transition-all"
                     >
                       <Smartphone className="w-3.5 h-3.5" />
                       <span>Quét NFC / Xem Không Gian Số</span>
@@ -420,7 +420,7 @@ export default function ScreenVault({
 
                     <button
                       onClick={() => setAddMemoryItem(item)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#7C4D2B] hover:bg-[#5E391F] text-white text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#606E5A] hover:bg-[#5E391F] text-white text-xs font-semibold transition-colors"
                     >
                       <PlusCircle className="w-3.5 h-3.5" />
                       <span>Bổ Sung Ký Ức Số</span>
@@ -428,7 +428,7 @@ export default function ScreenVault({
 
                     <button
                       onClick={() => setReturnItem(item)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#FAF6F0] hover:bg-[#F3E9D8] border border-[#E6DEC8] text-[#2C2523] text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#F6F2EB] hover:bg-[#EAE1D4] border border-[#D6BD95] text-[#2C3329] text-xs font-semibold transition-colors"
                     >
                       <Truck className="w-3.5 h-3.5 text-[#2B6CB0]" />
                       <span>Yêu Cầu Giao Trả Quà Về Nhà</span>
@@ -436,17 +436,17 @@ export default function ScreenVault({
 
                     <button
                       onClick={() => setTransferItem(item)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#FAF6F0] hover:bg-[#F3E9D8] border border-[#E6DEC8] text-[#2C2523] text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#F6F2EB] hover:bg-[#EAE1D4] border border-[#D6BD95] text-[#2C3329] text-xs font-semibold transition-colors"
                     >
-                      <Gift className="w-3.5 h-3.5 text-[#D96B43]" />
+                      <Gift className="w-3.5 h-3.5 text-[#C9A166]" />
                       <span>Chuyển Quyền Sở Hữu / Tặng Lại</span>
                     </button>
 
                     <button
                       onClick={() => setExtendItem(item)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#FAF6F0] hover:bg-[#F3E9D8] border border-[#E6DEC8] text-[#2C2523] text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#F6F2EB] hover:bg-[#EAE1D4] border border-[#D6BD95] text-[#2C3329] text-xs font-semibold transition-colors"
                     >
-                      <Clock className="w-3.5 h-3.5 text-[#3B7A57]" />
+                      <Clock className="w-3.5 h-3.5 text-[#606E5A]" />
                       <span>Gia Hạn Lưu Kho</span>
                     </button>
                   </div>
@@ -459,11 +459,11 @@ export default function ScreenVault({
 
       {/* 1. Fullscreen NFC / Digital Space Modal */}
       {nfcItem && (
-        <div className="fixed inset-0 z-50 bg-[#2C2523]/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#FAF6F0] border-2 border-[#E5A93C] rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative my-auto">
+        <div className="fixed inset-0 z-50 bg-[#2C3329]/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#F6F2EB] border-2 border-[#C9A166] rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative my-auto">
             <button
               onClick={closeNfcModal}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white border border-[#E6DEC8] flex items-center justify-center text-[#6E6259] hover:text-[#2C2523]"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white border border-[#D6BD95] flex items-center justify-center text-[#748067] hover:text-[#2C3329]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -471,26 +471,26 @@ export default function ScreenVault({
             {nfcStage === 'scanning' ? (
               <div className="py-16 flex flex-col items-center justify-center text-center">
                 <div className="relative w-24 h-24 flex items-center justify-center mb-6">
-                  <span className="absolute inset-0 rounded-full border-2 border-[#D96B43] animate-nfc-ripple" />
-                  <span className="absolute inset-2 rounded-full border-2 border-[#E5A93C] animate-nfc-ripple" />
-                  <div className="w-16 h-16 rounded-full bg-[#7C4D2B] text-white flex items-center justify-center shadow-lg">
+                  <span className="absolute inset-0 rounded-full border-2 border-[#C9A166] animate-nfc-ripple" />
+                  <span className="absolute inset-2 rounded-full border-2 border-[#C9A166] animate-nfc-ripple" />
+                  <div className="w-16 h-16 rounded-full bg-[#606E5A] text-white flex items-center justify-center shadow-lg">
                     <Smartphone className="w-8 h-8" />
                   </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#7C4D2B]">
+                <h3 className="font-serif text-2xl font-bold text-[#606E5A]">
                   Đang chạm thẻ NFC #{nfcItem.id}...
                 </h3>
-                <p className="text-sm text-[#6E6259] mt-2">
+                <p className="text-sm text-[#748067] mt-2">
                   Đang mở nắp hộp ký ức số và đồng bộ dữ liệu từ Kho Trung Tâm
                 </p>
               </div>
             ) : (
               <div className="space-y-5">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#3B7A57]">
-                  <Sparkles className="w-4 h-4 text-[#E5A93C]" />
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#606E5A]">
+                  <Sparkles className="w-4 h-4 text-[#C9A166]" />
                   <span>Không Gian Ký Ức Số — #{nfcItem.id}</span>
                 </div>
-                <h2 className="font-serif text-2xl font-bold text-[#2C2523]">
+                <h2 className="font-serif text-2xl font-bold text-[#2C3329]">
                   {nfcItem.name}
                 </h2>
 
@@ -504,18 +504,18 @@ export default function ScreenVault({
                 />
 
                 {/* Heartfelt Letter */}
-                <div className="p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-inner">
-                  <div className="text-xs font-bold text-[#7C4D2B] uppercase tracking-wider mb-2">
+                <div className="p-5 rounded-2xl bg-white border border-[#D6BD95] shadow-inner">
+                  <div className="text-xs font-bold text-[#606E5A] uppercase tracking-wider mb-2">
                     Tâm thư của chủ nhân
                   </div>
-                  <p className="font-serif italic text-sm text-[#2C2523] leading-relaxed whitespace-pre-line">
+                  <p className="font-serif italic text-sm text-[#2C3329] leading-relaxed whitespace-pre-line">
                     {nfcItem.digitalSpace.letter}
                   </p>
                 </div>
 
                 {/* Photo Gallery */}
                 <div>
-                  <div className="text-xs font-bold text-[#7C4D2B] uppercase tracking-wider mb-2">
+                  <div className="text-xs font-bold text-[#606E5A] uppercase tracking-wider mb-2">
                     Bộ ảnh kỷ niệm ({nfcItem.digitalSpace.photos.length})
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -524,21 +524,21 @@ export default function ScreenVault({
                         key={idx}
                         src={p}
                         alt={`Ảnh ${idx + 1}`}
-                        className="w-full h-28 object-cover rounded-xl border border-[#E6DEC8]"
+                        className="w-full h-28 object-cover rounded-xl border border-[#D6BD95]"
                       />
                     ))}
                   </div>
                 </div>
 
                 {/* Inspection History */}
-                <div className="p-4 rounded-2xl bg-white border border-[#E6DEC8]">
-                  <div className="text-xs font-bold text-[#3B7A57] uppercase tracking-wider mb-2">
+                <div className="p-4 rounded-2xl bg-white border border-[#D6BD95]">
+                  <div className="text-xs font-bold text-[#606E5A] uppercase tracking-wider mb-2">
                     Lịch sử kiểm định bảo quản tại kho
                   </div>
                   <div className="space-y-1.5 text-xs">
                     {nfcItem.digitalSpace.inspectionLogs.map((log, i) => (
                       <div key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#3B7A57] mt-0.5 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#606E5A] mt-0.5 shrink-0" />
                         <span>
                           <strong>{log.date}:</strong> {log.status}
                         </span>
@@ -554,12 +554,12 @@ export default function ScreenVault({
 
       {/* 2. Add Digital Memory Modal */}
       {addMemoryItem && (
-        <div className="fixed inset-0 z-50 bg-[#2C2523]/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="font-serif text-xl font-bold text-[#2C2523] mb-1">
+        <div className="fixed inset-0 z-50 bg-[#2C3329]/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="font-serif text-xl font-bold text-[#2C3329] mb-1">
               Bổ Sung Ký Ức Số — #{addMemoryItem.id}
             </h3>
-            <p className="text-xs text-[#6E6259] mb-4">
+            <p className="text-xs text-[#748067] mb-4">
               Thêm ảnh và nhật ký mới vào hộp quà đang bảo quản tại kho mà không cần lấy hộp về.
             </p>
             <div className="space-y-3">
@@ -576,7 +576,7 @@ export default function ScreenVault({
                   <button
                     type="button"
                     onClick={() => vaultFileRef.current?.click()}
-                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#D96B43] text-white text-[11px] font-bold"
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#C9A166] text-white text-[11px] font-bold"
                   >
                     <Upload className="w-3 h-3" />
                     <span>Tải ảnh từ máy tính</span>
@@ -587,7 +587,7 @@ export default function ScreenVault({
                     <SafeImage
                       src={newPhotoUrl}
                       alt="Xem trước"
-                      className="w-full h-28 object-cover rounded-xl border border-[#D96B43]"
+                      className="w-full h-28 object-cover rounded-xl border border-[#C9A166]"
                     />
                   </div>
                 )}
@@ -597,7 +597,7 @@ export default function ScreenVault({
                       key={img.url}
                       onClick={() => setNewPhotoUrl(img.url)}
                       className={`rounded-lg overflow-hidden border-2 ${
-                        newPhotoUrl === img.url ? 'border-[#D96B43]' : 'border-[#E6DEC8]'
+                        newPhotoUrl === img.url ? 'border-[#C9A166]' : 'border-[#D6BD95]'
                       }`}
                     >
                       <SafeImage src={img.url} alt={img.label} className="w-full h-12 object-cover" />
@@ -612,20 +612,20 @@ export default function ScreenVault({
                   value={newNoteText}
                   onChange={(e) => setNewNoteText(e.target.value)}
                   placeholder="Viết thêm cảm xúc hôm nay gửi vào hộp..."
-                  className="w-full p-3 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+                  className="w-full p-3 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-xs focus:outline-none focus:border-[#C9A166]"
                 />
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setAddMemoryItem(null)}
-                className="px-4 py-2 rounded-full border border-[#E6DEC8] text-xs font-semibold"
+                className="px-4 py-2 rounded-full border border-[#D6BD95] text-xs font-semibold"
               >
                 Hủy
               </button>
               <button
                 onClick={handleAddDigitalMemory}
-                className="px-5 py-2 rounded-full bg-[#7C4D2B] text-white text-xs font-semibold"
+                className="px-5 py-2 rounded-full bg-[#606E5A] text-white text-xs font-semibold"
               >
                 Lưu vào không gian số
               </button>
@@ -636,12 +636,12 @@ export default function ScreenVault({
 
       {/* 3. Request Return Modal */}
       {returnItem && (
-        <div className="fixed inset-0 z-50 bg-[#2C2523]/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="font-serif text-xl font-bold text-[#2C2523] mb-1">
+        <div className="fixed inset-0 z-50 bg-[#2C3329]/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="font-serif text-xl font-bold text-[#2C3329] mb-1">
               Yêu Cầu Giao Trả Quà — #{returnItem.id}
             </h3>
-            <p className="text-xs text-[#6E6259] mb-4">
+            <p className="text-xs text-[#748067] mb-4">
               Chọn người nhận và thời gian để nhân viên xuất kho giao tận tay.
             </p>
             <div className="space-y-3 text-xs">
@@ -650,8 +650,8 @@ export default function ScreenVault({
                   onClick={() => setReturnRecipientType('self')}
                   className={`p-2.5 rounded-xl border font-semibold ${
                     returnRecipientType === 'self'
-                      ? 'bg-[#7C4D2B] text-white border-[#7C4D2B]'
-                      : 'bg-[#FAF6F0] border-[#E6DEC8]'
+                      ? 'bg-[#606E5A] text-white border-[#606E5A]'
+                      : 'bg-[#F6F2EB] border-[#D6BD95]'
                   }`}
                 >
                   Nhận lại cho bản thân
@@ -660,8 +660,8 @@ export default function ScreenVault({
                   onClick={() => setReturnRecipientType('surprise')}
                   className={`p-2.5 rounded-xl border font-semibold ${
                     returnRecipientType === 'surprise'
-                      ? 'bg-[#D96B43] text-white border-[#D96B43]'
-                      : 'bg-[#FAF6F0] border-[#E6DEC8]'
+                      ? 'bg-[#C9A166] text-white border-[#C9A166]'
+                      : 'bg-[#F6F2EB] border-[#D6BD95]'
                   }`}
                 >
                   Ship bất ngờ cho người khác
@@ -673,7 +673,7 @@ export default function ScreenVault({
                   type="text"
                   value={returnAddress}
                   onChange={(e) => setReturnAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]"
                 />
               </div>
               <div>
@@ -682,20 +682,20 @@ export default function ScreenVault({
                   type="date"
                   value={returnDate}
                   onChange={(e) => setReturnDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]"
                 />
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setReturnItem(null)}
-                className="px-4 py-2 rounded-full border border-[#E6DEC8] text-xs font-semibold"
+                className="px-4 py-2 rounded-full border border-[#D6BD95] text-xs font-semibold"
               >
                 Đóng
               </button>
               <button
                 onClick={handleConfirmReturn}
-                className="px-5 py-2 rounded-full bg-[#D96B43] text-white text-xs font-semibold"
+                className="px-5 py-2 rounded-full bg-[#C9A166] text-white text-xs font-semibold"
               >
                 Xác nhận lệnh xuất kho
               </button>
@@ -706,12 +706,12 @@ export default function ScreenVault({
 
       {/* 4. Transfer Ownership Modal */}
       {transferItem && (
-        <div className="fixed inset-0 z-50 bg-[#2C2523]/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="font-serif text-xl font-bold text-[#2C2523] mb-1">
+        <div className="fixed inset-0 z-50 bg-[#2C3329]/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="font-serif text-xl font-bold text-[#2C3329] mb-1">
               Chuyển Quyền Sở Hữu / Tặng Lại
             </h3>
-            <p className="text-xs text-[#6E6259] mb-4">
+            <p className="text-xs text-[#748067] mb-4">
               Trao quyền làm chủ hộp #{transferItem.id} cho tài khoản khác (VD: thaonhi@gmail.com).
             </p>
             <div className="space-y-3 text-xs">
@@ -722,7 +722,7 @@ export default function ScreenVault({
                   value={transferContact}
                   onChange={(e) => setTransferContact(e.target.value)}
                   placeholder="VD: thaonhi@gmail.com"
-                  className="w-full px-3 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]"
                 />
               </div>
               <div>
@@ -732,20 +732,20 @@ export default function ScreenVault({
                   value={transferMsg}
                   onChange={(e) => setTransferMsg(e.target.value)}
                   placeholder="Gửi tặng bạn phần ký ức này..."
-                  className="w-full p-3 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]"
+                  className="w-full p-3 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]"
                 />
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setTransferItem(null)}
-                className="px-4 py-2 rounded-full border border-[#E6DEC8] text-xs font-semibold"
+                className="px-4 py-2 rounded-full border border-[#D6BD95] text-xs font-semibold"
               >
                 Hủy
               </button>
               <button
                 onClick={handleConfirmTransfer}
-                className="px-5 py-2 rounded-full bg-[#7C4D2B] text-white text-xs font-semibold"
+                className="px-5 py-2 rounded-full bg-[#606E5A] text-white text-xs font-semibold"
               >
                 Gửi lời mời trao quyền
               </button>
@@ -756,12 +756,12 @@ export default function ScreenVault({
 
       {/* 5. Extend Storage Modal */}
       {extendItem && (
-        <div className="fixed inset-0 z-50 bg-[#2C2523]/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="font-serif text-xl font-bold text-[#2C2523] mb-1">
+        <div className="fixed inset-0 z-50 bg-[#2C3329]/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="font-serif text-xl font-bold text-[#2C3329] mb-1">
               Gia Hạn Lưu Kho — #{extendItem.id}
             </h3>
-            <p className="text-xs text-[#6E6259] mb-4">
+            <p className="text-xs text-[#748067] mb-4">
               Chọn thời gian cộng thêm hoặc nâng cấp gói bảo quản.
             </p>
             <div className="grid grid-cols-3 gap-2 mb-5">
@@ -771,8 +771,8 @@ export default function ScreenVault({
                   onClick={() => setExtendChoice(opt)}
                   className={`py-2.5 rounded-xl border text-xs font-bold ${
                     extendChoice === opt
-                      ? 'bg-[#3B7A57] text-white border-[#3B7A57]'
-                      : 'bg-[#FAF6F0] border-[#E6DEC8] text-[#2C2523]'
+                      ? 'bg-[#606E5A] text-white border-[#606E5A]'
+                      : 'bg-[#F6F2EB] border-[#D6BD95] text-[#2C3329]'
                   }`}
                 >
                   +{opt}
@@ -782,13 +782,13 @@ export default function ScreenVault({
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setExtendItem(null)}
-                className="px-4 py-2 rounded-full border border-[#E6DEC8] text-xs font-semibold"
+                className="px-4 py-2 rounded-full border border-[#D6BD95] text-xs font-semibold"
               >
                 Đóng
               </button>
               <button
                 onClick={handleConfirmExtend}
-                className="px-5 py-2 rounded-full bg-[#D96B43] text-white text-xs font-semibold"
+                className="px-5 py-2 rounded-full bg-[#C9A166] text-white text-xs font-semibold"
               >
                 Xác nhận gia hạn
               </button>

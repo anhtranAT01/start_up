@@ -33,17 +33,17 @@ export default class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#FAF6F0] text-[#2C2523] flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 shadow-warm-lg border border-[#E6DEC8] text-center space-y-5">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-[#D96B43]/15 text-[#D96B43] flex items-center justify-center">
+        <div className="min-h-screen bg-[#F6F2EB] text-[#2C3329] flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 shadow-warm-lg border border-[#D6BD95] text-center space-y-5">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-[#C9A166]/15 text-[#C9A166] flex items-center justify-center">
               <Archive className="w-8 h-8" />
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl font-bold text-[#2C2523]">
+              <h2 className="font-serif text-2xl font-bold text-[#2C3329]">
                 Không Gian Ký Ức Đang Tải Lại
               </h2>
-              <p className="text-xs sm:text-sm text-[#6E6259] mt-2">
+              <p className="text-xs sm:text-sm text-[#748067] mt-2">
                 Đã xảy ra sự cố hiển thị tạm thời. Dữ liệu kỷ vật và tài khoản của bạn vẫn được lưu giữ an toàn tuyệt đối.
               </p>
             </div>
@@ -51,7 +51,7 @@ export default class ErrorBoundary extends React.Component {
             <div className="flex flex-col gap-2.5 pt-2">
               <button
                 onClick={this.handleReload}
-                className="w-full py-3 px-4 rounded-2xl bg-[#7C4D2B] hover:bg-[#5C361C] text-white text-sm font-bold shadow transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 rounded-2xl bg-[#606E5A] hover:bg-[#4A5645] text-white text-sm font-bold shadow transition-all flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Tải lại trang</span>
@@ -59,7 +59,7 @@ export default class ErrorBoundary extends React.Component {
 
               <button
                 onClick={this.handleResetStorage}
-                className="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-[#FAF6F0] border border-[#E6DEC8] text-[#7C4D2B] text-xs font-semibold transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-[#F6F2EB] border border-[#D6BD95] text-[#606E5A] text-xs font-semibold transition-all flex items-center justify-center gap-2"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Khôi phục dữ liệu ban đầu (Nếu lỗi lặp lại)</span>

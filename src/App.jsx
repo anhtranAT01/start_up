@@ -31,6 +31,24 @@ import {
 } from './utils/apiClient';
 import { hasSupabaseConfig } from './utils/supabaseClient';
 
+// Ensure Moclant signature magnolia posts and vault items are always merged into existing cache
+function ensureMoclantPosts(list) {
+  if (!Array.isArray(list) || list.length === 0) return INITIAL_POSTS;
+  const moclantSeeds = INITIAL_POSTS.filter((p) => p.id.startsWith('post-moclant-'));
+  const existingIds = new Set(list.map((p) => p?.id));
+  const missingSeeds = moclantSeeds.filter((p) => !existingIds.has(p.id));
+  return missingSeeds.length > 0 ? [...missingSeeds, ...list] : list;
+}
+
+function ensureMoclantVault(list) {
+  if (!Array.isArray(list) || list.length === 0) return INITIAL_VAULT_ITEMS;
+  const moclantBox = INITIAL_VAULT_ITEMS.find((v) => v.id === 'MK-8899');
+  if (moclantBox && !list.some((v) => v?.id === 'MK-8899')) {
+    return [moclantBox, ...list];
+  }
+  return list;
+}
+
 export default function App() {
   const cached = loadLocalCache();
 
@@ -47,14 +65,8 @@ export default function App() {
   const [activeScreen, setActiveScreen] = useState('feed');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [posts, setPosts] = useState(() =>
-    Array.isArray(cached?.posts) && cached.posts.length > 0 ? cached.posts : INITIAL_POSTS
-  );
-  const [vaultItems, setVaultItems] = useState(() =>
-    Array.isArray(cached?.vaultItems) && cached.vaultItems.length > 0
-      ? cached.vaultItems
-      : INITIAL_VAULT_ITEMS
-  );
+  const [posts, setPosts] = useState(() => ensureMoclantPosts(cached?.posts));
+  const [vaultItems, setVaultItems] = useState(() => ensureMoclantVault(cached?.vaultItems));
   const [capsules, setCapsules] = useState(() =>
     Array.isArray(cached?.capsules) && cached.capsules.length > 0
       ? cached.capsules
@@ -121,12 +133,16 @@ export default function App() {
         if (remote.updatedAt && (!local?.updatedAt || remote.updatedAt > local.updatedAt)) {
           isRemoteUpdate.current = true;
           if (Array.isArray(remote.accounts)) setAccounts(remote.accounts);
-          if (Array.isArray(remote.posts)) setPosts(remote.posts);
-          if (Array.isArray(remote.vaultItems)) setVaultItems(remote.vaultItems);
+          if (Array.isArray(remote.posts)) setPosts(ensureMoclantPosts(remote.posts));
+          if (Array.isArray(remote.vaultItems)) setVaultItems(ensureMoclantVault(remote.vaultItems));
           if (Array.isArray(remote.capsules)) setCapsules(remote.capsules);
           if (Array.isArray(remote.reminders)) setReminders(remote.reminders);
           if (Array.isArray(remote.dispatchOrders)) setDispatchOrders(remote.dispatchOrders);
-          saveLocalCache(remote);
+          saveLocalCache({
+            ...remote,
+            posts: ensureMoclantPosts(remote.posts),
+            vaultItems: ensureMoclantVault(remote.vaultItems),
+          });
         }
         setSyncStatus('synced');
       })
@@ -193,10 +209,10 @@ export default function App() {
     setUser(acc);
     if (acc.role === 'admin') {
       setActiveScreen('dispatch');
-      showToast(`Xin chào Quản trị viên! Đã mở quyền Trạm Điều Phối Kho.`);
+      showToast(`Xin chào Quản trị viên! Đã mở quyền Trạm Điều Phối Kho Moclant.`);
     } else {
       setActiveScreen('feed');
-      showToast(`Chào mừng ${acc.name} quay về Cửa Hàng Ký Ức!`);
+      showToast(`Chào mừng ${acc.name} quay về Moclant • Cửa Hàng Ký Ức!`);
     }
   };
 
@@ -207,7 +223,7 @@ export default function App() {
     const starterReminder = {
       id: `REM-${String(Date.now()).slice(-4)}`,
       ownerEmail: newAccount.email,
-      targetName: `Lời chào mừng thành viên mới (${newAccount.name})`,
+      targetName: `Lời chào mừng thành viên Moclant (${newAccount.name})`,
       scheduleType: 'Định kỳ hàng năm',
       channels: ['Thông báo App'],
       autoShip: false,
@@ -216,7 +232,7 @@ export default function App() {
     setReminders((prev) => [starterReminder, ...(Array.isArray(prev) ? prev : [])]);
 
     setActiveScreen('feed');
-    showToast(`Chào mừng ${newAccount.name}! Tài khoản của bạn đã được lưu vào Backend.`);
+    showToast(`Chào mừng ${newAccount.name} đến với Moclant! Tài khoản của bạn đã được lưu.`);
   };
 
   const handleLogout = () => {
@@ -254,7 +270,7 @@ export default function App() {
     );
 
     setShowProfileModal(false);
-    showToast('Đã lưu ảnh đại diện và hồ sơ mới vào Backend!');
+    showToast('Đã lưu ảnh đại diện và hồ sơ mới vào hệ thống Moclant!');
   };
 
   const handleCreateOrder = (newVaultItem, newDispatchOrder) => {
@@ -328,7 +344,7 @@ export default function App() {
               ...(v.digitalSpace || {}),
               inspectionLogs: [
                 {
-                  date: '16/11/2026 - Vừa xong',
+                  date: '26/11/2026 - Vừa xong',
                   status: `Đã quét mã QR nhập kho thành công tại ${generatedLocation}.`,
                 },
                 ...prevLogs,
@@ -341,7 +357,7 @@ export default function App() {
     );
 
     if (nextStep === 2) showToast(`Shipper đã nhận đơn #${orderId}!`);
-    if (nextStep === 3) showToast(`Đã xác nhận niêm phong kẹp chì tại nhà cho #${orderId}!`);
+    if (nextStep === 3) showToast(`Đã xác nhận niêm phong dấu Hoa Mộc Lan tại nhà cho #${orderId}!`);
     if (nextStep === 4) {
       showToast(`Đã nhập kho #${targetOrder.vaultId} tại ${generatedLocation}!`);
     }
@@ -369,8 +385,8 @@ export default function App() {
             ...(v.digitalSpace || {}),
             inspectionLogs: [
               {
-                date: '16/11/2026 - Vừa xong',
-                status: 'Nhân viên kho đã gửi bộ ảnh kiểm định tình trạng hộp nguyên vẹn 100%.',
+                date: '26/11/2026 - Vừa xong',
+                status: 'Nhân viên kho đã gửi bộ ảnh kiểm định tình trạng hộp Moclant nguyên vẹn 100%.',
               },
               ...prevLogs,
             ],
@@ -418,7 +434,7 @@ export default function App() {
     activeScreen === 'dispatch' && user.role !== 'admin' ? 'feed' : activeScreen;
 
   return (
-    <div className="min-h-screen bg-[#FAF6F0] text-[#2C2523] flex flex-col pb-20 lg:pb-10">
+    <div className="min-h-screen bg-[#F6F2EB] text-[#2C3329] flex flex-col pb-20 lg:pb-10">
       <Header
         user={user}
         onEditProfile={() => setShowProfileModal(true)}
@@ -524,22 +540,22 @@ export default function App() {
       </div>
 
       {/* Live Backend Sync Badge */}
-      <div className="fixed bottom-16 lg:bottom-4 left-4 z-30 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#E6DEC8] shadow-sm text-[11px] font-medium text-[#6E6259]">
+      <div className="fixed bottom-16 lg:bottom-4 left-4 z-30 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm border border-[#D6BD95] shadow-sm text-[11px] font-medium text-[#748067]">
         {syncStatus === 'syncing' ? (
           <>
-            <RefreshCw className="w-3.5 h-3.5 text-[#D96B43] animate-spin" />
-            <span>Đang đồng bộ Backend...</span>
+            <RefreshCw className="w-3.5 h-3.5 text-[#C9A166] animate-spin" />
+            <span>Đang đồng bộ Moclant Cloud...</span>
           </>
         ) : syncStatus === 'synced' ? (
           <>
-            <Cloud className="w-3.5 h-3.5 text-[#3B7A57]" />
-            <span className="text-[#3B7A57] font-semibold">
-              {isSupabaseConnected ? 'Đã đồng bộ Supabase Cloud' : 'Đã đồng bộ Backend API'}
+            <Cloud className="w-3.5 h-3.5 text-[#606E5A]" />
+            <span className="text-[#606E5A] font-semibold">
+              {isSupabaseConnected ? 'Đã đồng bộ Supabase Cloud' : 'Đã đồng bộ Moclant API'}
             </span>
           </>
         ) : (
           <>
-            <Cloud className="w-3.5 h-3.5 text-[#7C4D2B]" />
+            <Cloud className="w-3.5 h-3.5 text-[#606E5A]" />
             <span>Lưu trữ Cloud & Local</span>
           </>
         )}
@@ -564,8 +580,9 @@ export default function App() {
               .then((remote) => {
                 if (remote) {
                   if (Array.isArray(remote.accounts)) setAccounts(remote.accounts);
-                  if (Array.isArray(remote.posts)) setPosts(remote.posts);
-                  if (Array.isArray(remote.vaultItems)) setVaultItems(remote.vaultItems);
+                  if (Array.isArray(remote.posts)) setPosts(ensureMoclantPosts(remote.posts));
+                  if (Array.isArray(remote.vaultItems))
+                    setVaultItems(ensureMoclantVault(remote.vaultItems));
                   if (Array.isArray(remote.capsules)) setCapsules(remote.capsules);
                   if (Array.isArray(remote.reminders)) setReminders(remote.reminders);
                   if (Array.isArray(remote.dispatchOrders)) setDispatchOrders(remote.dispatchOrders);
@@ -578,16 +595,16 @@ export default function App() {
 
       {/* Global Toast Notification */}
       {toast && (
-        <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 max-w-sm bg-[#2C2523] text-[#FAF6F0] px-4 py-3 rounded-2xl shadow-2xl border border-[#E5A93C]/40 flex items-center gap-3">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 max-w-sm bg-[#606E5A] text-[#F6F2EB] px-4 py-3 rounded-2xl shadow-2xl border border-[#C9A166]/60 flex items-center gap-3">
           {toast.type === 'error' ? (
-            <AlertCircle className="w-5 h-5 text-[#D96B43] shrink-0" />
+            <AlertCircle className="w-5 h-5 text-[#EAE1D4] shrink-0" />
           ) : (
-            <CheckCircle2 className="w-5 h-5 text-[#E5A93C] shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-[#C9A166] shrink-0" />
           )}
           <span className="text-xs sm:text-sm font-medium flex-1">{toast.message}</span>
           <button
             onClick={() => setToast(null)}
-            className="text-white/60 hover:text-white shrink-0"
+            className="text-white/70 hover:text-white shrink-0"
           >
             <X className="w-4 h-4" />
           </button>

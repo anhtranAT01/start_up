@@ -210,24 +210,24 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
       '5. Đã nhập kho an toàn',
     ];
     return (
-      <div className="max-w-3xl mx-auto bg-white border border-[#E6DEC8] rounded-2xl p-6 sm:p-8 shadow-warm">
+      <div className="max-w-3xl mx-auto bg-white border border-[#D6BD95] rounded-2xl p-6 sm:p-8 shadow-warm">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-[#3B7A57]/15 text-[#3B7A57] flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-full bg-[#606E5A]/15 text-[#606E5A] flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-9 h-9" />
           </div>
-          <h2 className="font-serif text-2xl font-bold text-[#2C2523]">
+          <h2 className="font-serif text-2xl font-bold text-[#2C3329]">
             Điều Phối Nhân Viên Thành Công!
           </h2>
-          <p className="text-sm text-[#6E6259] mt-1.5">
-            Mã đơn vận chuyển: <span className="font-bold text-[#7C4D2B]">#{submittedOrder.orderId}</span> • Mã hộp định danh:{' '}
-            <span className="font-bold text-[#3B7A57]">#{submittedOrder.vaultId}</span>
+          <p className="text-sm text-[#748067] mt-1.5">
+            Mã đơn vận chuyển: <span className="font-bold text-[#606E5A]">#{submittedOrder.orderId}</span> • Mã hộp định danh:{' '}
+            <span className="font-bold text-[#606E5A]">#{submittedOrder.vaultId}</span>
           </p>
         </div>
 
         {/* 5-step Live Tracking */}
-        <div className="mt-8 bg-[#FAF6F0] border border-[#E6DEC8] rounded-2xl p-5">
+        <div className="mt-8 bg-[#F6F2EB] border border-[#D6BD95] rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#7C4D2B]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#606E5A]">
               Theo Dõi Trạng Thái Đơn Hàng Trực Tiếp (Live Tracking)
             </span>
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#2B6CB0]/15 text-[#2B6CB0]">
@@ -243,17 +243,17 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                   className={`p-3 rounded-xl border text-center transition-all ${
                     active
                       ? 'bg-white border-[#2B6CB0] shadow-sm'
-                      : 'bg-white/50 border-[#E6DEC8] opacity-65'
+                      : 'bg-white/50 border-[#D6BD95] opacity-65'
                   }`}
                 >
                   <div
                     className={`w-7 h-7 rounded-full mx-auto mb-2 flex items-center justify-center text-xs font-bold ${
-                      active ? 'bg-[#2B6CB0] text-white' : 'bg-[#E6DEC8] text-[#6E6259]'
+                      active ? 'bg-[#2B6CB0] text-white' : 'bg-[#D6BD95] text-[#748067]'
                     }`}
                   >
                     {idx + 1}
                   </div>
-                  <div className="text-[11px] font-semibold text-[#2C2523] leading-snug">
+                  <div className="text-[11px] font-semibold text-[#2C3329] leading-snug">
                     {label.replace(/^\d+\.\s/, '')}
                   </div>
                 </div>
@@ -265,13 +265,13 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button
             onClick={() => onNavigate('vault')}
-            className="px-5 py-2.5 rounded-full bg-[#7C4D2B] hover:bg-[#5E391F] text-white text-xs sm:text-sm font-semibold shadow"
+            className="px-5 py-2.5 rounded-full bg-[#606E5A] hover:bg-[#5E391F] text-white text-xs sm:text-sm font-semibold shadow"
           >
             Xem trong Kho Lưu Trữ Của Tôi
           </button>
           <button
             onClick={resetWizard}
-            className="px-5 py-2.5 rounded-full border border-[#E6DEC8] bg-[#FAF6F0] text-[#7C4D2B] text-xs sm:text-sm font-semibold"
+            className="px-5 py-2.5 rounded-full border border-[#D6BD95] bg-[#F6F2EB] text-[#606E5A] text-xs sm:text-sm font-semibold"
           >
             Đặt thêm đơn mới
           </button>
@@ -283,11 +283,11 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header & Stepper */}
-      <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 sm:p-6 shadow-warm">
-        <h1 className="font-serif text-2xl font-bold text-[#2C2523]">
+      <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 sm:p-6 shadow-warm">
+        <h1 className="font-serif text-2xl font-bold text-[#2C3329]">
           Đặt Lịch Gửi Quà & Điều Phối Nhân Viên Đến Lấy
         </h1>
-        <p className="text-sm text-[#6E6259] mt-1">
+        <p className="text-sm text-[#748067] mt-1">
           Quy trình 4 bước niêm phong bảo mật tại nhà và đưa về bảo quản tại Kho Trung Tâm.
         </p>
 
@@ -300,26 +300,26 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                 key={s.num}
                 className={`flex items-center gap-2.5 p-2.5 rounded-xl border transition-all ${
                   isCurrent
-                    ? 'bg-[#D96B43]/10 border-[#D96B43]'
+                    ? 'bg-[#C9A166]/10 border-[#C9A166]'
                     : isDone
-                    ? 'bg-[#3B7A57]/10 border-[#3B7A57]/40'
-                    : 'bg-[#FAF6F0] border-[#E6DEC8]'
+                    ? 'bg-[#606E5A]/10 border-[#606E5A]/40'
+                    : 'bg-[#F6F2EB] border-[#D6BD95]'
                 }`}
               >
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                     isCurrent
-                      ? 'bg-[#D96B43] text-white'
+                      ? 'bg-[#C9A166] text-white'
                       : isDone
-                      ? 'bg-[#3B7A57] text-white'
-                      : 'bg-[#E6DEC8] text-[#6E6259]'
+                      ? 'bg-[#606E5A] text-white'
+                      : 'bg-[#D6BD95] text-[#748067]'
                   }`}
                 >
                   {isDone ? '✓' : s.num}
                 </div>
                 <span
                   className={`text-xs font-semibold ${
-                    isCurrent ? 'text-[#D96B43]' : isDone ? 'text-[#3B7A57]' : 'text-[#6E6259]'
+                    isCurrent ? 'text-[#C9A166]' : isDone ? 'text-[#606E5A]' : 'text-[#748067]'
                   }`}
                 >
                   {s.title}
@@ -331,17 +331,17 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
       </div>
 
       {/* Step Content */}
-      <div className="bg-white border border-[#E6DEC8] rounded-2xl p-6 shadow-warm">
+      <div className="bg-white border border-[#D6BD95] rounded-2xl p-6 shadow-warm">
         {step === 1 && (
           <div className="space-y-5">
-            <h2 className="font-serif text-xl font-bold text-[#7C4D2B] flex items-center gap-2">
-              <Package className="w-5 h-5 text-[#D96B43]" />
+            <h2 className="font-serif text-xl font-bold text-[#606E5A] flex items-center gap-2">
+              <Package className="w-5 h-5 text-[#C9A166]" />
               Bước 1: Thông tin Kỷ vật & Câu chuyện
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+                <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                   Tên hộp kỷ vật <span className="text-[#9B2C2C]">*</span>
                 </label>
                 <input
@@ -349,17 +349,17 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                   value={boxName}
                   onChange={(e) => setBoxName(e.target.value)}
                   placeholder="VD: Hộp thư tay & chiếc khăn len năm nhất"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+                <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                   Phân loại vật phẩm
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166]"
                 >
                   <option>Quà lưu niệm</option>
                   <option>Thư từ / Sách ảnh</option>
@@ -371,7 +371,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-2">
+              <label className="block text-xs font-semibold text-[#2C3329] mb-2">
                 Kích thước ước tính
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -386,8 +386,8 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                     onClick={() => setSize(sz)}
                     className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all ${
                       size === sz
-                        ? 'bg-[#7C4D2B] text-white border-[#7C4D2B]'
-                        : 'bg-[#FAF6F0] text-[#2C2523] border-[#E6DEC8] hover:border-[#7C4D2B]'
+                        ? 'bg-[#606E5A] text-white border-[#606E5A]'
+                        : 'bg-[#F6F2EB] text-[#2C3329] border-[#D6BD95] hover:border-[#606E5A]'
                     }`}
                   >
                     {sz}
@@ -398,7 +398,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
 
             <div>
               <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                <label className="block text-xs font-semibold text-[#2C2523]">
+                <label className="block text-xs font-semibold text-[#2C3329]">
                   Tải lên ảnh chụp kỷ vật trước khi bàn giao (Biên bản đối chiếu)
                 </label>
                 <input
@@ -411,16 +411,16 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                 <button
                   type="button"
                   onClick={() => pickupFileRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-sm transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-bold shadow-sm transition-colors"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>Tải ảnh từ máy tính của bạn</span>
                 </button>
               </div>
               {photo && !SAMPLE_IMAGES.some((img) => img.url === photo) && (
-                <div className="mb-3 inline-flex items-center gap-3 p-2 rounded-xl bg-[#FAF6F0] border-2 border-[#D96B43]">
+                <div className="mb-3 inline-flex items-center gap-3 p-2 rounded-xl bg-[#F6F2EB] border-2 border-[#C9A166]">
                   <SafeImage src={photo} alt="Ảnh tải lên" className="w-20 h-16 object-cover rounded-lg" />
-                  <span className="text-xs font-semibold text-[#D96B43] pr-2">
+                  <span className="text-xs font-semibold text-[#C9A166] pr-2">
                     ✓ Đang dùng ảnh tải từ máy của bạn
                   </span>
                 </div>
@@ -432,11 +432,11 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                     key={img.url}
                     onClick={() => setPhoto(img.url)}
                     className={`rounded-xl overflow-hidden border-2 transition-all text-left ${
-                      photo === img.url ? 'border-[#D96B43] ring-2 ring-[#D96B43]/30' : 'border-[#E6DEC8]'
+                      photo === img.url ? 'border-[#C9A166] ring-2 ring-[#C9A166]/30' : 'border-[#D6BD95]'
                     }`}
                   >
                     <SafeImage src={img.url} alt={img.label} className="w-full h-20 object-cover" />
-                    <div className="p-1.5 text-[11px] bg-[#FAF6F0] truncate font-medium">
+                    <div className="p-1.5 text-[11px] bg-[#F6F2EB] truncate font-medium">
                       {img.label}
                     </div>
                   </button>
@@ -445,7 +445,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+              <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                 Câu chuyện & Ghi chú bảo quản đặc biệt
               </label>
               <textarea
@@ -453,7 +453,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                 value={story}
                 onChange={(e) => setStory(e.target.value)}
                 placeholder="VD: Yêu cầu hút ẩm kỹ, tuyệt đối không mở phong bì màu kem bên trong..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43] resize-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166] resize-none"
               />
             </div>
           </div>
@@ -461,8 +461,8 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
 
         {step === 2 && (
           <div className="space-y-5">
-            <h2 className="font-serif text-xl font-bold text-[#7C4D2B] flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-[#D96B43]" />
+            <h2 className="font-serif text-xl font-bold text-[#606E5A] flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-[#C9A166]" />
               Bước 2: Chọn Quy cách Bảo quản & Đính kèm Công nghệ
             </h2>
 
@@ -476,15 +476,15 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                     onClick={() => setBoxType(b.name)}
                     className={`p-4 rounded-2xl border text-left transition-all flex flex-col justify-between ${
                       selected
-                        ? 'bg-[#FAF6F0] border-[#D96B43] ring-2 ring-[#D96B43]/25'
-                        : 'bg-white border-[#E6DEC8] hover:border-[#7C4D2B]'
+                        ? 'bg-[#F6F2EB] border-[#C9A166] ring-2 ring-[#C9A166]/25'
+                        : 'bg-white border-[#D6BD95] hover:border-[#606E5A]'
                     }`}
                   >
                     <div>
-                      <div className="text-sm font-bold text-[#2C2523] mb-1">{b.name}</div>
-                      <p className="text-xs text-[#6E6259] leading-relaxed">{b.desc}</p>
+                      <div className="text-sm font-bold text-[#2C3329] mb-1">{b.name}</div>
+                      <p className="text-xs text-[#748067] leading-relaxed">{b.desc}</p>
                     </div>
-                    <div className="mt-3 pt-2 border-t border-[#E6DEC8] text-sm font-bold text-[#D96B43]">
+                    <div className="mt-3 pt-2 border-t border-[#D6BD95] text-sm font-bold text-[#C9A166]">
                       +{formatVND(b.price)}
                     </div>
                   </button>
@@ -492,25 +492,25 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
               })}
             </div>
 
-            <div className="space-y-3 bg-[#FAF6F0] p-4 rounded-2xl border border-[#E6DEC8]">
+            <div className="space-y-3 bg-[#F6F2EB] p-4 rounded-2xl border border-[#D6BD95]">
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={addNfc}
                   onChange={(e) => setAddNfc(e.target.checked)}
-                  className="mt-1 w-4 h-4 accent-[#D96B43]"
+                  className="mt-1 w-4 h-4 accent-[#C9A166]"
                 />
                 <div>
-                  <div className="text-sm font-semibold text-[#2C2523]">
+                  <div className="text-sm font-semibold text-[#2C3329]">
                     Gắn chip NFC & Tem QR định danh lên hộp (Tặng kèm 1 thẻ NFC bản sao giữ tại nhà)
                   </div>
-                  <div className="text-xs text-[#6E6259]">
+                  <div className="text-xs text-[#748067]">
                     Chạm điện thoại vào thẻ bản sao ở nhà để mở ngay Không gian Ký ức Số của hộp quà đang nằm tại kho.
                   </div>
                 </div>
               </label>
 
-              <label className="flex items-start gap-3 cursor-pointer pt-2 border-t border-[#E6DEC8]/70">
+              <label className="flex items-start gap-3 cursor-pointer pt-2 border-t border-[#D6BD95]/70">
                 <input
                   type="checkbox"
                   checked={isTimeCapsule}
@@ -522,7 +522,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                     <Lock className="w-4 h-4" />
                     Bật chế độ Hộp thời gian (Khóa không cho mở trước ngày hẹn)
                   </div>
-                  <div className="text-xs text-[#6E6259]">
+                  <div className="text-xs text-[#748067]">
                     Hộp sẽ được chuyển vào khu vực Khóa Kín và tự động đếm ngược đến ngày mở khóa.
                   </div>
                 </div>
@@ -530,7 +530,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-2">
+              <label className="block text-xs font-semibold text-[#2C3329] mb-2">
                 Thời hạn lưu kho dự kiến
               </label>
               <div className="flex flex-wrap gap-2">
@@ -541,8 +541,8 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                     onClick={() => setDuration(d.label)}
                     className={`px-4 py-2 rounded-full text-xs font-semibold border transition-colors ${
                       duration === d.label
-                        ? 'bg-[#7C4D2B] text-white border-[#7C4D2B]'
-                        : 'bg-[#FAF6F0] text-[#2C2523] border-[#E6DEC8]'
+                        ? 'bg-[#606E5A] text-white border-[#606E5A]'
+                        : 'bg-[#F6F2EB] text-[#2C3329] border-[#D6BD95]'
                     }`}
                   >
                     {d.label}
@@ -555,65 +555,65 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
 
         {step === 3 && (
           <div className="space-y-5">
-            <h2 className="font-serif text-xl font-bold text-[#7C4D2B] flex items-center gap-2">
-              <Truck className="w-5 h-5 text-[#D96B43]" />
+            <h2 className="font-serif text-xl font-bold text-[#606E5A] flex items-center gap-2">
+              <Truck className="w-5 h-5 text-[#C9A166]" />
               Bước 3: Đặt lịch Nhân viên đến nhận quà tận nơi
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+                <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                   Họ tên người gửi
                 </label>
                 <input
                   type="text"
                   value={senderName}
                   onChange={(e) => setSenderName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+                <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                   Số điện thoại liên hệ
                 </label>
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+              <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                 Địa chỉ lấy hàng chi tiết
               </label>
               <div className="relative">
-                <MapPin className="w-4 h-4 text-[#D96B43] absolute left-3.5 top-3" />
+                <MapPin className="w-4 h-4 text-[#C9A166] absolute left-3.5 top-3" />
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43]"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+                <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                   Ngày lấy hàng
                 </label>
                 <input
                   type="date"
                   value={pickupDate}
                   onChange={(e) => setPickupDate(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-sm focus:outline-none focus:border-[#D96B43]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-sm focus:outline-none focus:border-[#C9A166]"
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-[#2C2523] mb-1.5">
+                <label className="block text-xs font-semibold text-[#2C3329] mb-1.5">
                   Khung giờ nhân viên đến lấy
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -625,7 +625,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
                       className={`py-2.5 px-3 rounded-xl text-xs font-semibold border transition-colors ${
                         timeSlot === slot
                           ? 'bg-[#2B6CB0] text-white border-[#2B6CB0]'
-                          : 'bg-[#FAF6F0] text-[#2C2523] border-[#E6DEC8]'
+                          : 'bg-[#F6F2EB] text-[#2C3329] border-[#D6BD95]'
                       }`}
                     >
                       {slot}
@@ -635,19 +635,19 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#3B7A57]/10 border border-[#3B7A57]/30 flex items-start gap-3">
+            <div className="p-4 rounded-2xl bg-[#606E5A]/10 border border-[#606E5A]/30 flex items-start gap-3">
               <input
                 type="checkbox"
                 checked={leadSeal}
                 onChange={(e) => setLeadSeal(e.target.checked)}
-                className="mt-1 w-4 h-4 accent-[#3B7A57]"
+                className="mt-1 w-4 h-4 accent-[#606E5A]"
               />
               <div>
-                <div className="text-sm font-bold text-[#3B7A57] flex items-center gap-1.5">
+                <div className="text-sm font-bold text-[#606E5A] flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4" />
                   Yêu cầu Nhân viên mang Kẹp chì & Túi niêm phong bảo mật tại chỗ
                 </div>
-                <p className="text-xs text-[#2C2523]/80 mt-1 leading-relaxed">
+                <p className="text-xs text-[#2C3329]/80 mt-1 leading-relaxed">
                   Bạn tự tay niêm phong và ký tên lên tem bảo mật ngay tại nhà. Nhân viên kho chỉ bảo quản nguyên trạng bên ngoài, tuyệt đối không biết nội dung bên trong.
                 </p>
               </div>
@@ -657,54 +657,54 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
 
         {step === 4 && (
           <div className="space-y-5">
-            <h2 className="font-serif text-xl font-bold text-[#7C4D2B] flex items-center gap-2">
-              <FileCheck2 className="w-5 h-5 text-[#D96B43]" />
+            <h2 className="font-serif text-xl font-bold text-[#606E5A] flex items-center gap-2">
+              <FileCheck2 className="w-5 h-5 text-[#C9A166]" />
               Bước 4: Biên bản Bảo hiểm & Xác nhận Điều phối
             </h2>
 
-            <div className="bg-[#FAF6F0] border border-[#E6DEC8] rounded-2xl p-5 space-y-3 text-sm">
+            <div className="bg-[#F6F2EB] border border-[#D6BD95] rounded-2xl p-5 space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-[#6E6259]">Kỷ vật gửi lưu kho:</span>
-                <span className="font-bold text-[#2C2523]">{boxName}</span>
+                <span className="text-[#748067]">Kỷ vật gửi lưu kho:</span>
+                <span className="font-bold text-[#2C3329]">{boxName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6E6259]">Quy cách hộp bảo quản:</span>
-                <span className="font-semibold text-[#7C4D2B]">{boxType}</span>
+                <span className="text-[#748067]">Quy cách hộp bảo quản:</span>
+                <span className="font-semibold text-[#606E5A]">{boxType}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6E6259]">Thời hạn lưu trữ:</span>
+                <span className="text-[#748067]">Thời hạn lưu trữ:</span>
                 <span className="font-semibold">{duration}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6E6259]">Chi phí hộp chuyên dụng:</span>
+                <span className="text-[#748067]">Chi phí hộp chuyên dụng:</span>
                 <span className="font-semibold">{formatVND(selectedBoxObj.price)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6E6259]">Phí nhân viên thu gom tận nhà:</span>
-                <span className="font-semibold text-[#3B7A57]">
+                <span className="text-[#748067]">Phí nhân viên thu gom tận nhà:</span>
+                <span className="font-semibold text-[#606E5A]">
                   {pickupFee === 0 ? 'Miễn phí (Ưu đãi gói)' : formatVND(pickupFee)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#6E6259]">Mức đền bù bảo hiểm cam kết:</span>
-                <span className="font-bold text-[#3B7A57]">{formatVND(insuranceCover)}</span>
+                <span className="text-[#748067]">Mức đền bù bảo hiểm cam kết:</span>
+                <span className="font-bold text-[#606E5A]">{formatVND(insuranceCover)}</span>
               </div>
-              <div className="pt-3 border-t border-[#E6DEC8] flex justify-between items-center">
-                <span className="font-bold text-base text-[#2C2523]">Tổng thanh toán:</span>
-                <span className="font-serif text-2xl font-bold text-[#D96B43]">
+              <div className="pt-3 border-t border-[#D6BD95] flex justify-between items-center">
+                <span className="font-bold text-base text-[#2C3329]">Tổng thanh toán:</span>
+                <span className="font-serif text-2xl font-bold text-[#C9A166]">
                   {formatVND(totalAmount)}
                 </span>
               </div>
             </div>
 
-            <label className="flex items-start gap-3 cursor-pointer p-3 rounded-xl bg-white border border-[#E6DEC8]">
+            <label className="flex items-start gap-3 cursor-pointer p-3 rounded-xl bg-white border border-[#D6BD95]">
               <input
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
-                className="mt-0.5 w-4 h-4 accent-[#D96B43]"
+                className="mt-0.5 w-4 h-4 accent-[#C9A166]"
               />
-              <span className="text-xs text-[#2C2523] leading-relaxed">
+              <span className="text-xs text-[#2C3329] leading-relaxed">
                 Tôi đồng ý với <strong>Hợp đồng Dịch vụ Lưu trữ & Cam kết Bảo mật</strong> của Cửa Hàng Ký Ức. Kỷ vật không chứa chất cấm, chất dễ cháy nổ theo quy định pháp luật.
               </span>
             </label>
@@ -712,24 +712,24 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
             <button
               type="button"
               onClick={handleConfirm}
-              className="w-full py-3.5 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white font-bold text-sm sm:text-base shadow-warm hover:shadow-warm-lg transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white font-bold text-sm sm:text-base shadow-warm hover:shadow-warm-lg transition-all flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-5 h-5 text-[#E5A93C]" />
+              <Sparkles className="w-5 h-5 text-[#C9A166]" />
               <span>Xác Nhận & Điều Phối Nhân Viên Đến Lấy Quà</span>
             </button>
           </div>
         )}
 
         {/* Navigation Buttons */}
-        <div className="mt-6 pt-4 border-t border-[#E6DEC8] flex items-center justify-between">
+        <div className="mt-6 pt-4 border-t border-[#D6BD95] flex items-center justify-between">
           <button
             type="button"
             disabled={step === 1}
             onClick={() => setStep((s) => Math.max(1, s - 1))}
             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold border transition-colors ${
               step === 1
-                ? 'opacity-40 cursor-not-allowed bg-[#FAF6F0] border-[#E6DEC8] text-[#6E6259]'
-                : 'bg-white border-[#E6DEC8] text-[#7C4D2B] hover:bg-[#FAF6F0]'
+                ? 'opacity-40 cursor-not-allowed bg-[#F6F2EB] border-[#D6BD95] text-[#748067]'
+                : 'bg-white border-[#D6BD95] text-[#606E5A] hover:bg-[#F6F2EB]'
             }`}
           >
             <ArrowLeft className="w-4 h-4" />
@@ -740,7 +740,7 @@ export default function ScreenPickupWizard({ user, onCreateOrder, showToast, onN
             <button
               type="button"
               onClick={handleNext}
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#7C4D2B] hover:bg-[#5E391F] text-white text-xs font-semibold shadow-sm transition-colors"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#606E5A] hover:bg-[#5E391F] text-white text-xs font-semibold shadow-sm transition-colors"
             >
               <span>Tiếp theo</span>
               <ArrowRight className="w-4 h-4" />

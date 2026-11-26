@@ -15,6 +15,62 @@ import {
 import { soundEngine } from '../utils/soundEngine';
 import { AVATAR_PRESETS } from '../data/mockData';
 
+/**
+ * Moclant Magnolia Brand Logo Component
+ * Displays the official Moclant magnolia blossom logo image with refined framing.
+ */
+export function MoclantLogo({ size = 'md', showText = true, lightText = false, className = '' }) {
+  const sizeClasses = {
+    sm: 'w-9 h-9 rounded-xl',
+    md: 'w-11 h-11 rounded-xl',
+    lg: 'w-14 h-14 rounded-2xl',
+    xl: 'w-20 h-20 rounded-2xl',
+  };
+
+  return (
+    <div className={`inline-flex items-center gap-3 ${className}`}>
+      <div
+        className={`relative ${sizeClasses[size] || sizeClasses.md} bg-white border border-[#D6BD95] shadow-sm overflow-hidden flex items-center justify-center shrink-0 ring-2 ring-[#C9A166]/25 group-hover:scale-105 transition-transform`}
+      >
+        <img
+          src="/moclant-logo.jpg"
+          alt="Moclant — Hoa Mộc Lan Lưu Giữ Ký Ức"
+          className="w-full h-full object-contain p-0.5"
+        />
+      </div>
+      {showText && (
+        <div>
+          <div className="flex items-center gap-1.5">
+            <span
+              className={`font-serif text-lg sm:text-xl font-bold tracking-tight leading-tight ${
+                lightText ? 'text-[#F6F2EB]' : 'text-[#606E5A]'
+              }`}
+            >
+              Moclant
+            </span>
+            <span
+              className={`text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border ${
+                lightText
+                  ? 'bg-white/10 text-[#D6BD95] border-[#D6BD95]/40'
+                  : 'bg-[#EAE1D4] text-[#606E5A] border-[#D6BD95]'
+              }`}
+            >
+              Cửa Hàng Ký Ức
+            </span>
+          </div>
+          <div
+            className={`text-[11px] italic ${
+              lightText ? 'text-[#EAE1D4]/90' : 'text-[#748067]'
+            }`}
+          >
+            Hương mộc lan thanh khiết • Chạm để quay về
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function SafeImage({ src, alt, className = '' }) {
   const [failed, setFailed] = useState(false);
 
@@ -25,10 +81,10 @@ export function SafeImage({ src, alt, className = '' }) {
   if (!src || failed) {
     return (
       <div
-        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#F3E9D8] via-[#EFE3CE] to-[#E6DEC8] text-[#7C4D2B] p-4 ${className}`}
+        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#F6F2EB] via-[#EAE1D4] to-[#D6BD95]/40 text-[#606E5A] p-4 ${className}`}
       >
-        <Sparkles className="w-7 h-7 opacity-60 mb-1" />
-        <span className="text-xs font-medium opacity-75 text-center">{alt || 'Kỷ vật ký ức'}</span>
+        <Sparkles className="w-7 h-7 opacity-60 mb-1 text-[#C9A166]" />
+        <span className="text-xs font-medium opacity-80 text-center">{alt || 'Kỷ vật ký ức Moclant'}</span>
       </div>
     );
   }
@@ -75,7 +131,7 @@ export function QrCodeSvg({ value = 'MK-1024', size = 128 }) {
         filled = seed % 3 !== 0;
       }
       if (filled) {
-        cells.push(<rect key={`${r}-${c}`} x={c} y={r} width={1} height={1} fill="#2C2523" />);
+        cells.push(<rect key={`${r}-${c}`} x={c} y={r} width={1} height={1} fill="#606E5A" />);
       }
     }
   }
@@ -85,7 +141,7 @@ export function QrCodeSvg({ value = 'MK-1024', size = 128 }) {
       width={size}
       height={size}
       viewBox={`0 0 ${grid} ${grid}`}
-      className="bg-white p-2 rounded-xl border border-[#E6DEC8] shadow-sm"
+      className="bg-white p-2 rounded-xl border border-[#D6BD95] shadow-sm"
       shapeRendering="crispEdges"
     >
       {cells}
@@ -179,7 +235,7 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
     <div
       className={`${
         compact ? 'p-3' : 'mt-3.5 p-3.5'
-      } rounded-2xl bg-gradient-to-r from-[#FAF6F0] via-[#F7EFE4] to-[#FAF6F0] border border-[#E6DEC8] shadow-inner flex items-center gap-3.5 transition-all`}
+      } rounded-2xl bg-gradient-to-r from-[#F6F2EB] via-[#EAE1D4] to-[#F6F2EB] border border-[#D6BD95] shadow-inner flex items-center gap-3.5 transition-all`}
     >
       {audio?.blobUrl && (
         <audio
@@ -195,8 +251,8 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
         onClick={togglePlay}
         className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all shadow-md ${
           playing
-            ? 'bg-gradient-to-br from-[#D96B43] to-[#B84A24] text-white scale-105 ring-4 ring-[#D96B43]/20'
-            : 'bg-gradient-to-br from-[#7C4D2B] to-[#5A361C] hover:from-[#D96B43] hover:to-[#B84A24] text-white'
+            ? 'bg-gradient-to-br from-[#C9A166] to-[#B38B50] text-white scale-105 ring-4 ring-[#C9A166]/25'
+            : 'bg-gradient-to-br from-[#606E5A] to-[#4A5645] hover:from-[#C9A166] hover:to-[#B38B50] text-white'
         }`}
         title={playing ? 'Tạm dừng' : 'Phát giai điệu ký ức'}
       >
@@ -205,16 +261,16 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between text-xs mb-1.5 gap-2">
-          <div className="font-semibold text-[#2C2523] truncate flex items-center gap-1.5">
-            <Music className={`w-3.5 h-3.5 text-[#D96B43] shrink-0 ${playing ? 'animate-spin' : ''}`} />
+          <div className="font-semibold text-[#2C3329] truncate flex items-center gap-1.5">
+            <Music className={`w-3.5 h-3.5 text-[#C9A166] shrink-0 ${playing ? 'animate-spin' : ''}`} />
             <span className="truncate">{audio?.title || 'Bản ghi âm kỷ niệm.mp3'}</span>
             {playing && (
-              <span className="hidden sm:inline-block text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#D96B43]/15 text-[#D96B43]">
+              <span className="hidden sm:inline-block text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#C9A166]/20 text-[#606E5A]">
                 Đang phát giai điệu
               </span>
             )}
           </div>
-          <span className="text-[#6E6259] font-mono text-[11px] shrink-0">
+          <span className="text-[#748067] font-mono text-[11px] shrink-0">
             {formatSec(elapsed)} / {formatSec(durationSeconds)}
           </span>
         </div>
@@ -222,11 +278,11 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
         {/* Clickable Seek Bar */}
         <div
           onClick={handleSeek}
-          className="w-full h-2 bg-[#E6DEC8]/80 rounded-full overflow-hidden cursor-pointer relative group"
+          className="w-full h-2 bg-[#D6BD95]/60 rounded-full overflow-hidden cursor-pointer relative group"
           title="Bấm để tua thời gian"
         >
           <div
-            className="h-full bg-gradient-to-r from-[#7C4D2B] via-[#D96B43] to-[#E5A93C] rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-[#606E5A] via-[#748067] to-[#C9A166] rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -235,17 +291,17 @@ export function AudioPlayer({ audio, trackId = 'track-default', compact = false 
       {/* Equalizer animation when playing */}
       {playing && (
         <div className="hidden sm:flex items-end gap-0.5 h-5 px-1">
-          <span className="w-1 h-4 bg-[#D96B43] rounded-full animate-wave-1" />
-          <span className="w-1 h-5 bg-[#E5A93C] rounded-full animate-wave-2" />
-          <span className="w-1 h-3 bg-[#7C4D2B] rounded-full animate-wave-3" />
-          <span className="w-1 h-5 bg-[#D96B43] rounded-full animate-wave-4" />
+          <span className="w-1 h-4 bg-[#C9A166] rounded-full animate-wave-1" />
+          <span className="w-1 h-5 bg-[#606E5A] rounded-full animate-wave-2" />
+          <span className="w-1 h-3 bg-[#748067] rounded-full animate-wave-3" />
+          <span className="w-1 h-5 bg-[#C9A166] rounded-full animate-wave-4" />
         </div>
       )}
 
       <button
         type="button"
         onClick={toggleMute}
-        className="w-8 h-8 rounded-full bg-white/80 hover:bg-white border border-[#E6DEC8] flex items-center justify-center text-[#7C4D2B] shrink-0 transition-colors"
+        className="w-8 h-8 rounded-full bg-white/80 hover:bg-white border border-[#D6BD95] flex items-center justify-center text-[#606E5A] shrink-0 transition-colors"
         title={muted ? 'Bật tiếng' : 'Tắt tiếng'}
       >
         {muted ? <VolumeX className="w-4 h-4 text-[#9B2C2C]" /> : <Volume2 className="w-4 h-4" />}
@@ -293,35 +349,35 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#2C2523]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white border-2 border-[#E6DEC8] rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative my-auto">
+    <div className="fixed inset-0 z-50 bg-[#2C3329]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white border-2 border-[#D6BD95] rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative my-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#FAF6F0] hover:bg-[#E6DEC8] flex items-center justify-center text-[#2C2523]"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F6F2EB] hover:bg-[#EAE1D4] flex items-center justify-center text-[#2C3329]"
         >
           <X className="w-4 h-4" />
         </button>
 
-        <h3 className="font-serif text-xl font-bold text-[#2C2523]">
+        <h3 className="font-serif text-xl font-bold text-[#606E5A]">
           Đổi Ảnh Đại Diện & Hồ Sơ Cá Nhân
         </h3>
-        <p className="text-xs text-[#6E6259] mt-0.5">
-          Tải ảnh trực tiếp từ máy tính của bạn hoặc chọn từ bộ sưu tập chân dung hoài niệm.
+        <p className="text-xs text-[#748067] mt-0.5">
+          Tải ảnh trực tiếp từ máy tính của bạn hoặc chọn từ bộ sưu tập chân dung hoài niệm Moclant.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           {/* Current Avatar Preview + Upload from PC */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-[#FAF6F0] border border-[#E6DEC8]">
+          <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-[#F6F2EB] border border-[#D6BD95]">
             <div className="relative group shrink-0">
               <SafeImage
                 src={avatar}
                 alt={name}
-                className="w-20 h-20 rounded-full object-cover border-4 border-[#E5A93C] shadow-md"
+                className="w-20 h-20 rounded-full object-cover border-4 border-[#C9A166] shadow-md"
               />
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#D96B43] text-white flex items-center justify-center shadow hover:bg-[#B84A24]"
+                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#606E5A] text-white flex items-center justify-center shadow hover:bg-[#4A5645]"
                 title="Tải ảnh từ máy"
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -339,12 +395,12 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-sm transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-bold shadow-sm transition-colors"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>Tải ảnh đại diện từ máy tính</span>
               </button>
-              <div className="text-[11px] text-[#6E6259]">
+              <div className="text-[11px] text-[#748067]">
                 Hỗ trợ JPG, PNG, WebP hoặc GIF trực tiếp từ thiết bị của bạn.
               </div>
             </div>
@@ -352,7 +408,7 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
 
           {/* Preset Avatars */}
           <div>
-            <label className="block text-xs font-semibold text-[#7C4D2B] mb-2">
+            <label className="block text-xs font-semibold text-[#606E5A] mb-2">
               Hoặc chọn nhanh ảnh đại diện mẫu:
             </label>
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
@@ -363,8 +419,8 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
                   onClick={() => setAvatar(presetUrl)}
                   className={`relative rounded-full overflow-hidden w-11 h-11 border-2 transition-all mx-auto ${
                     avatar === presetUrl
-                      ? 'border-[#D96B43] scale-110 ring-2 ring-[#D96B43]/30'
-                      : 'border-[#E6DEC8] hover:border-[#7C4D2B]'
+                      ? 'border-[#C9A166] scale-110 ring-2 ring-[#C9A166]/30'
+                      : 'border-[#D6BD95] hover:border-[#606E5A]'
                   }`}
                 >
                   <SafeImage
@@ -380,52 +436,52 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
           {/* Paste URL option */}
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <Link2 className="w-3.5 h-3.5 text-[#6E6259] absolute left-3 top-1/2 -translate-y-1/2" />
+              <Link2 className="w-3.5 h-3.5 text-[#748067] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={customUrl}
                 onChange={(e) => setCustomUrl(e.target.value)}
                 placeholder="Hoặc dán đường dẫn URL ảnh bất kỳ..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+                className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-xs focus:outline-none focus:border-[#606E5A]"
               />
             </div>
             <button
               type="button"
               onClick={handleApplyUrl}
-              className="px-3 py-1.5 rounded-xl bg-[#FAF6F0] hover:bg-[#E6DEC8] border border-[#E6DEC8] text-xs font-semibold text-[#7C4D2B]"
+              className="px-3 py-1.5 rounded-xl bg-[#F6F2EB] hover:bg-[#EAE1D4] border border-[#D6BD95] text-xs font-semibold text-[#606E5A]"
             >
               Áp dụng
             </button>
           </div>
 
           {/* Profile Info Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E6DEC8]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#D6BD95]">
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-1">
+              <label className="block text-xs font-semibold text-[#2C3329] mb-1">
                 Tên hiển thị *
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs font-medium focus:outline-none focus:border-[#D96B43]"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-xs font-medium focus:outline-none focus:border-[#606E5A]"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#2C2523] mb-1">
+              <label className="block text-xs font-semibold text-[#2C3329] mb-1">
                 Số điện thoại
               </label>
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs font-medium focus:outline-none focus:border-[#D96B43]"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-xs font-medium focus:outline-none focus:border-[#606E5A]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#2C2523] mb-1">
+            <label className="block text-xs font-semibold text-[#2C3329] mb-1">
               Châm ngôn / Giới thiệu ngắn dưới tên
             </label>
             <input
@@ -433,7 +489,7 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="VD: Sinh viên ĐH Ngoại Thương • Yêu những lá thư tay"
-              className="w-full px-3.5 py-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+              className="w-full px-3.5 py-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95] text-xs focus:outline-none focus:border-[#606E5A]"
             />
           </div>
 
@@ -441,13 +497,13 @@ export function AvatarProfileModal({ user, onSaveProfile, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-full border border-[#E6DEC8] text-xs font-semibold text-[#6E6259]"
+              className="px-4 py-2 rounded-full border border-[#D6BD95] text-xs font-semibold text-[#748067]"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-gradient-to-r from-[#D96B43] to-[#B84A24] text-white text-xs font-bold shadow"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-gradient-to-r from-[#606E5A] to-[#4A5645] hover:from-[#C9A166] hover:to-[#B38B50] text-white text-xs font-bold shadow"
             >
               <Check className="w-4 h-4" />
               <span>Lưu Thay Đổi Hồ Sơ</span>

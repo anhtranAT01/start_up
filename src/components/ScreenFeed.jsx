@@ -29,6 +29,7 @@ import { SafeImage, QrCodeSvg, AudioPlayer } from './SharedUI';
 
 const FILTER_TABS = [
   { id: 'all', label: 'Tất cả ký ức' },
+  { id: 'moclant', label: '✿ Hoa Mộc Lan Moclant' },
   { id: 'physical', label: 'Có kỷ vật thật tại kho' },
   { id: 'future', label: 'Thư gửi tương lai' },
   { id: 'anonymous', label: 'Góc ẩn danh' },
@@ -241,6 +242,14 @@ export default function ScreenFeed({
 
     if (!matchSearch) return false;
     if (activeTab === 'all') return true;
+    if (activeTab === 'moclant')
+      return (
+        String(p.id).includes('moclant') ||
+        (p.content && p.content.toLowerCase().includes('mộc lan')) ||
+        (p.content && p.content.toLowerCase().includes('moclant')) ||
+        (Array.isArray(p.hashtags) &&
+          p.hashtags.some((h) => h.toLowerCase().includes('moclant') || h.toLowerCase().includes('moclan')))
+      );
     if (activeTab === 'physical') return Boolean(p.verifiedBox);
     if (activeTab === 'future')
       return p.category === 'future' || p.visibility === 'Khóa đến ngày kỷ niệm';
@@ -250,7 +259,7 @@ export default function ScreenFeed({
   });
 
   const handleDownloadPostcard = (post) => {
-    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360"><rect width="100%" height="100%" fill="#FAF6F0"/><rect x="16" y="16" width="568" height="328" fill="none" stroke="#7C4D2B" stroke-width="2"/><text x="40" y="65" font-family="Georgia" font-size="24" fill="#7C4D2B">BƯU THIẾP KÝ ỨC — ${post.author}</text><text x="40" y="105" font-family="sans-serif" font-size="14" fill="#2C2523">${post.content.slice(0, 90).replace(/[<>&]/g, '')}...</text><text x="40" y="310" font-family="sans-serif" font-size="12" fill="#6E6259">Cửa Hàng Ký Ức • Gói ghém khoảnh khắc, Chạm để quay về</text></svg>`;
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360"><rect width="100%" height="100%" fill="#F6F2EB"/><rect x="16" y="16" width="568" height="328" fill="none" stroke="#606E5A" stroke-width="2"/><text x="40" y="65" font-family="Georgia" font-size="24" fill="#606E5A">BƯU THIẾP KÝ ỨC — ${post.author}</text><text x="40" y="105" font-family="sans-serif" font-size="14" fill="#2C3329">${post.content.slice(0, 90).replace(/[<>&]/g, '')}...</text><text x="40" y="310" font-family="sans-serif" font-size="12" fill="#748067">Cửa Hàng Ký Ức • Gói ghém khoảnh khắc, Chạm để quay về</text></svg>`;
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -263,33 +272,42 @@ export default function ScreenFeed({
 
   return (
     <div className="space-y-6">
-      {/* Boutique Hero Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-[#5C361C] via-[#7C4D2B] to-[#965D36] text-[#FAF6F0] p-6 sm:p-7 shadow-warm-lg relative overflow-hidden border border-[#E5A93C]/30">
-        <div className="absolute -right-12 -bottom-16 w-64 h-64 rounded-full bg-[#E5A93C]/15 blur-2xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs text-[#E5A93C] font-semibold mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Không gian hoài niệm đồng bộ tài khoản: {user.name}</span>
+      {/* Moclant Magnolia Boutique Hero Banner */}
+      <div className="rounded-3xl bg-gradient-to-r from-[#4A5645] via-[#606E5A] to-[#748067] text-[#F6F2EB] p-6 sm:p-7 shadow-warm-lg relative overflow-hidden border border-[#C9A166]/45">
+        <div className="absolute -right-12 -bottom-16 w-64 h-64 rounded-full bg-[#C9A166]/20 blur-2xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="w-20 h-20 rounded-2xl bg-white p-1.5 shadow-lg border-2 border-[#C9A166] shrink-0 flex items-center justify-center">
+              <img
+                src="/moclant-logo.jpg"
+                alt="Moclant — Biểu tượng Hoa Mộc Lan"
+                className="w-full h-full object-contain"
+              />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-tight">
-              Cộng đồng lưu giữ ký ức & kỷ vật thời gian
-            </h1>
-            <p className="text-xs sm:text-sm text-white/85 mt-1 max-w-2xl">
-              Nơi hàng ngàn câu chuyện từ sinh viên, gia đình trẻ đến những di sản thế hệ được gói ghém và sẻ chia mỗi ngày.
-            </p>
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-[#D6BD95]/40 text-xs text-[#EAE1D4] font-semibold mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#C9A166]" />
+                <span>Moclant • Biểu tượng Hoa Mộc Lan thanh khiết • Tài khoản: {user.name}</span>
+              </div>
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-tight text-white">
+                Moclant — Nơi đóa Hoa Mộc Lan ấp ủ những ký ức vượt thời gian
+              </h1>
+              <p className="text-xs sm:text-sm text-[#EAE1D4]/90 mt-1 max-w-2xl">
+                Lấy cảm hứng từ vẻ đẹp thanh cao, bền bỉ của loài Hoa Mộc Lan trên nền Xanh Olive (#606E5A) và Vàng Champagne (#C9A166), Moclant gìn giữ trọn vẹn từng kỷ vật và câu chuyện của bạn.
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={onEditProfile}
-              className="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all"
+              className="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-[#D6BD95]/40 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all"
             >
-              <Camera className="w-4 h-4 text-[#E5A93C]" />
+              <Camera className="w-4 h-4 text-[#C9A166]" />
               <span>Đổi Avatar</span>
             </button>
             <button
               onClick={() => onNavigate('pickup')}
-              className="px-4 py-3 rounded-2xl bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-md transition-all"
+              className="px-4 py-3 rounded-2xl bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-bold shadow-md transition-all"
             >
               + Đặt lịch gửi quà
             </button>
@@ -301,7 +319,7 @@ export default function ScreenFeed({
         {/* Left 70% Feed */}
         <div className="lg:col-span-8 space-y-5">
           {/* Composer Box */}
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm">
             <div className="flex items-start gap-3.5">
               {/* Clickable Avatar to change profile picture */}
               <button
@@ -313,9 +331,9 @@ export default function ScreenFeed({
                 <SafeImage
                   src={isAnonymous ? '' : user.avatar}
                   alt={isAnonymous ? 'Ẩn danh' : user.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-[#E5A93C] group-hover:opacity-85 transition-opacity"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-[#C9A166] group-hover:opacity-85 transition-opacity"
                 />
-                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#D96B43] text-white flex items-center justify-center shadow">
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#C9A166] text-white flex items-center justify-center shadow">
                   <Camera className="w-3 h-3" />
                 </span>
               </button>
@@ -326,7 +344,7 @@ export default function ScreenFeed({
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={`Hôm nay ${user.name} muốn gói ghém mảnh ký ức nào?`}
-                  className="w-full bg-[#FAF6F0] border border-[#E6DEC8] rounded-xl p-3.5 text-sm text-[#2C2523] placeholder-[#6E6259]/75 focus:outline-none focus:ring-2 focus:ring-[#D96B43]/30 focus:border-[#D96B43] resize-none transition-all"
+                  className="w-full bg-[#F6F2EB] border border-[#D6BD95] rounded-xl p-3.5 text-sm text-[#2C3329] placeholder-[#748067]/75 focus:outline-none focus:ring-2 focus:ring-[#C9A166]/30 focus:border-[#C9A166] resize-none transition-all"
                 />
 
                 {/* Hidden File Input for direct PC upload */}
@@ -344,11 +362,11 @@ export default function ScreenFeed({
                     <SafeImage
                       src={selectedImage}
                       alt="Ảnh đính kèm"
-                      className="max-h-48 w-auto rounded-xl border-2 border-[#D96B43]/40 shadow-sm object-cover"
+                      className="max-h-48 w-auto rounded-xl border-2 border-[#C9A166]/40 shadow-sm object-cover"
                     />
                     <button
                       onClick={() => setSelectedImage('')}
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#2C2523] text-white flex items-center justify-center shadow"
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#2C3329] text-white flex items-center justify-center shadow"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -356,18 +374,18 @@ export default function ScreenFeed({
                 )}
 
                 {isRecording && (
-                  <div className="mt-3 p-3 rounded-xl bg-[#D96B43]/10 border border-[#D96B43]/30 flex items-center justify-between">
+                  <div className="mt-3 p-3 rounded-xl bg-[#C9A166]/10 border border-[#C9A166]/30 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#9B2C2C] animate-ping" />
-                      <span className="text-xs font-semibold text-[#D96B43]">
+                      <span className="text-xs font-semibold text-[#C9A166]">
                         Đang thu âm giọng nói của bạn...
                       </span>
                       <div className="flex items-center gap-1 h-5">
-                        <span className="w-1 h-4 bg-[#D96B43] rounded-full animate-wave-1" />
-                        <span className="w-1 h-5 bg-[#E5A93C] rounded-full animate-wave-2" />
-                        <span className="w-1 h-3 bg-[#D96B43] rounded-full animate-wave-3" />
-                        <span className="w-1 h-5 bg-[#7C4D2B] rounded-full animate-wave-4" />
-                        <span className="w-1 h-4 bg-[#D96B43] rounded-full animate-wave-1" />
+                        <span className="w-1 h-4 bg-[#C9A166] rounded-full animate-wave-1" />
+                        <span className="w-1 h-5 bg-[#C9A166] rounded-full animate-wave-2" />
+                        <span className="w-1 h-3 bg-[#C9A166] rounded-full animate-wave-3" />
+                        <span className="w-1 h-5 bg-[#606E5A] rounded-full animate-wave-4" />
+                        <span className="w-1 h-4 bg-[#C9A166] rounded-full animate-wave-1" />
                       </div>
                     </div>
                     <button
@@ -386,7 +404,7 @@ export default function ScreenFeed({
                 )}
 
                 {linkedBox && (
-                  <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#3B7A57]/10 border border-[#3B7A57]/30 text-xs font-semibold text-[#3B7A57]">
+                  <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#606E5A]/10 border border-[#606E5A]/30 text-xs font-semibold text-[#606E5A]">
                     <ShieldCheck className="w-4 h-4" />
                     <span>
                       Đã liên kết hộp #{linkedBox.id} — {linkedBox.name}
@@ -399,15 +417,15 @@ export default function ScreenFeed({
 
                 {/* Image Upload & Sample Picker Drawer */}
                 {showImagePicker && (
-                  <div className="mt-3 p-4 rounded-2xl bg-[#FAF6F0] border border-[#E6DEC8] space-y-3">
+                  <div className="mt-3 p-4 rounded-2xl bg-[#F6F2EB] border border-[#D6BD95] space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-[#7C4D2B]">
+                      <span className="text-xs font-bold text-[#606E5A]">
                         Đính kèm hình ảnh kỷ niệm vào bài viết:
                       </span>
                       <button
                         type="button"
                         onClick={() => postImageInputRef.current?.click()}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-bold shadow-sm transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-bold shadow-sm transition-colors"
                       >
                         <Upload className="w-3.5 h-3.5" />
                         <span>Tải ảnh từ máy tính của bạn</span>
@@ -421,7 +439,7 @@ export default function ScreenFeed({
                         value={customImageUrl}
                         onChange={(e) => setCustomImageUrl(e.target.value)}
                         placeholder="Hoặc dán đường dẫn URL ảnh (https://...)..."
-                        className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+                        className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-[#D6BD95] text-xs focus:outline-none focus:border-[#C9A166]"
                       />
                       <button
                         type="button"
@@ -432,13 +450,13 @@ export default function ScreenFeed({
                             setShowImagePicker(false);
                           }
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-white border border-[#E6DEC8] hover:border-[#7C4D2B] text-xs font-semibold text-[#7C4D2B]"
+                        className="px-3 py-1.5 rounded-xl bg-white border border-[#D6BD95] hover:border-[#606E5A] text-xs font-semibold text-[#606E5A]"
                       >
                         Dùng URL
                       </button>
                     </div>
 
-                    <div className="text-[11px] font-semibold text-[#6E6259]">
+                    <div className="text-[11px] font-semibold text-[#748067]">
                       Hoặc chọn nhanh từ thư viện ảnh hoài niệm:
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -450,14 +468,14 @@ export default function ScreenFeed({
                             setSelectedImage(img.url);
                             setShowImagePicker(false);
                           }}
-                          className="group relative rounded-lg overflow-hidden border border-[#E6DEC8] hover:border-[#D96B43] text-left"
+                          className="group relative rounded-lg overflow-hidden border border-[#D6BD95] hover:border-[#C9A166] text-left"
                         >
                           <SafeImage
                             src={img.url}
                             alt={img.label}
                             className="w-full h-16 object-cover"
                           />
-                          <div className="text-[10px] p-1 bg-white/95 truncate text-[#2C2523]">
+                          <div className="text-[10px] p-1 bg-white/95 truncate text-[#2C3329]">
                             {img.label}
                           </div>
                         </button>
@@ -468,12 +486,12 @@ export default function ScreenFeed({
 
                 {/* Vault Box Picker Drawer */}
                 {showBoxPicker && (
-                  <div className="mt-3 p-3 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]">
-                    <div className="text-xs font-semibold text-[#7C4D2B] mb-2">
+                  <div className="mt-3 p-3 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]">
+                    <div className="text-xs font-semibold text-[#606E5A] mb-2">
                       Chọn Hộp kỷ vật của {user.name} đang gửi tại Kho:
                     </div>
                     {vaultItems.length === 0 ? (
-                      <div className="text-xs text-[#6E6259] py-2">
+                      <div className="text-xs text-[#748067] py-2">
                         Tài khoản của bạn chưa có hộp kỷ vật nào tại kho. Hãy đặt lịch gửi quà trước nhé!
                       </div>
                     ) : (
@@ -485,13 +503,13 @@ export default function ScreenFeed({
                               setLinkedBox(box);
                               setShowBoxPicker(false);
                             }}
-                            className="w-full flex items-center justify-between p-2 rounded-lg bg-white border border-[#E6DEC8] hover:border-[#3B7A57] text-left text-xs transition-colors"
+                            className="w-full flex items-center justify-between p-2 rounded-lg bg-white border border-[#D6BD95] hover:border-[#606E5A] text-left text-xs transition-colors"
                           >
                             <div>
-                              <span className="font-bold text-[#7C4D2B]">#{box.id}</span> —{' '}
-                              <span className="font-medium text-[#2C2523]">{box.name}</span>
+                              <span className="font-bold text-[#606E5A]">#{box.id}</span> —{' '}
+                              <span className="font-medium text-[#2C3329]">{box.name}</span>
                             </div>
-                            <span className="text-[11px] text-[#3B7A57] font-semibold">
+                            <span className="text-[11px] text-[#606E5A] font-semibold">
                               {box.statusLabel}
                             </span>
                           </button>
@@ -502,7 +520,7 @@ export default function ScreenFeed({
                 )}
 
                 {/* Composer Toolbar */}
-                <div className="mt-3 pt-3 border-t border-[#E6DEC8]/70 flex flex-wrap items-center justify-between gap-2">
+                <div className="mt-3 pt-3 border-t border-[#D6BD95]/70 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-1.5">
                     <button
                       type="button"
@@ -510,9 +528,9 @@ export default function ScreenFeed({
                         setShowImagePicker(!showImagePicker);
                         setShowBoxPicker(false);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF6F0] hover:bg-[#F3E9D8] text-xs font-medium text-[#7C4D2B] border border-[#E6DEC8] transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F6F2EB] hover:bg-[#EAE1D4] text-xs font-medium text-[#606E5A] border border-[#D6BD95] transition-colors"
                     >
-                      <ImageIcon className="w-3.5 h-3.5 text-[#D96B43]" />
+                      <ImageIcon className="w-3.5 h-3.5 text-[#C9A166]" />
                       <span>Đính kèm Ảnh/Video</span>
                     </button>
 
@@ -522,7 +540,7 @@ export default function ScreenFeed({
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                         isRecording
                           ? 'bg-[#9B2C2C] text-white border-[#9B2C2C]'
-                          : 'bg-[#FAF6F0] hover:bg-[#F3E9D8] text-[#7C4D2B] border-[#E6DEC8]'
+                          : 'bg-[#F6F2EB] hover:bg-[#EAE1D4] text-[#606E5A] border-[#D6BD95]'
                       }`}
                     >
                       <Mic className="w-3.5 h-3.5" />
@@ -535,7 +553,7 @@ export default function ScreenFeed({
                         setShowBoxPicker(!showBoxPicker);
                         setShowImagePicker(false);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF6F0] hover:bg-[#F3E9D8] text-xs font-medium text-[#3B7A57] border border-[#E6DEC8] transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F6F2EB] hover:bg-[#EAE1D4] text-xs font-medium text-[#606E5A] border border-[#D6BD95] transition-colors"
                     >
                       <Link2 className="w-3.5 h-3.5" />
                       <span>Liên kết Hộp kỷ vật ({vaultItems.length})</span>
@@ -544,14 +562,14 @@ export default function ScreenFeed({
 
                   <div className="flex flex-wrap items-center gap-2 ml-auto">
                     {/* Anonymous Toggle */}
-                    <label className="inline-flex items-center gap-1.5 cursor-pointer select-none text-xs text-[#6E6259]">
+                    <label className="inline-flex items-center gap-1.5 cursor-pointer select-none text-xs text-[#748067]">
                       <input
                         type="checkbox"
                         checked={isAnonymous}
                         onChange={(e) => setIsAnonymous(e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-8 h-4 bg-[#E6DEC8] peer-checked:bg-[#7C4D2B] rounded-full relative transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-all peer-checked:after:translate-x-4" />
+                      <div className="w-8 h-4 bg-[#D6BD95] peer-checked:bg-[#606E5A] rounded-full relative transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-all peer-checked:after:translate-x-4" />
                       <EyeOff className="w-3.5 h-3.5" />
                       <span>Đăng ẩn danh</span>
                     </label>
@@ -560,7 +578,7 @@ export default function ScreenFeed({
                     <select
                       value={visibility}
                       onChange={(e) => setVisibility(e.target.value)}
-                      className="text-xs bg-[#FAF6F0] border border-[#E6DEC8] rounded-full px-3 py-1.5 text-[#2C2523] font-medium focus:outline-none"
+                      className="text-xs bg-[#F6F2EB] border border-[#D6BD95] rounded-full px-3 py-1.5 text-[#2C3329] font-medium focus:outline-none"
                     >
                       <option value="Công khai">Công khai</option>
                       <option value="Chỉ mình tôi">Chỉ mình tôi</option>
@@ -571,7 +589,7 @@ export default function ScreenFeed({
                     <button
                       type="button"
                       onClick={handleCreatePost}
-                      className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#D96B43] to-[#B84A24] hover:from-[#B84A24] hover:to-[#9B3B1B] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all"
+                      className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#C9A166] to-[#B38B50] hover:from-[#B38B50] hover:to-[#9A7540] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all"
                     >
                       Đăng Ký Ức
                     </button>
@@ -591,8 +609,8 @@ export default function ScreenFeed({
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
                     active
-                      ? 'bg-[#7C4D2B] text-white border-[#7C4D2B] shadow-sm'
-                      : 'bg-white text-[#6E6259] border-[#E6DEC8] hover:border-[#7C4D2B] hover:text-[#7C4D2B]'
+                      ? 'bg-[#606E5A] text-white border-[#606E5A] shadow-sm'
+                      : 'bg-white text-[#748067] border-[#D6BD95] hover:border-[#606E5A] hover:text-[#606E5A]'
                   }`}
                 >
                   {tab.label}
@@ -604,40 +622,40 @@ export default function ScreenFeed({
           {/* Memory Post Cards */}
           <div className="space-y-5">
             {filteredPosts.length === 0 ? (
-              <div className="bg-white border border-[#E6DEC8] rounded-2xl p-10 text-center text-[#6E6259]">
+              <div className="bg-white border border-[#D6BD95] rounded-2xl p-10 text-center text-[#748067]">
                 Không tìm thấy bài viết ký ức nào phù hợp với bộ lọc hiện tại.
               </div>
             ) : (
               filteredPosts.map((post) => (
                 <article
                   key={post.id}
-                  className="bg-white border border-[#E6DEC8] rounded-2xl p-5 sm:p-6 shadow-warm hover:shadow-warm-lg transition-all"
+                  className="bg-white border border-[#D6BD95] rounded-2xl p-5 sm:p-6 shadow-warm hover:shadow-warm-lg transition-all"
                 >
                   {/* Post Header */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       {post.isAnonymous ? (
-                        <div className="w-11 h-11 rounded-full bg-[#7C4D2B]/10 border border-[#E6DEC8] flex items-center justify-center text-[#7C4D2B]">
+                        <div className="w-11 h-11 rounded-full bg-[#606E5A]/10 border border-[#D6BD95] flex items-center justify-center text-[#606E5A]">
                           <EyeOff className="w-5 h-5" />
                         </div>
                       ) : (
                         <SafeImage
                           src={post.avatar}
                           alt={post.author}
-                          className="w-11 h-11 rounded-full object-cover border-2 border-[#E6DEC8]"
+                          className="w-11 h-11 rounded-full object-cover border-2 border-[#D6BD95]"
                         />
                       )}
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-sm text-[#2C2523]">
+                          <span className="font-semibold text-sm text-[#2C3329]">
                             {post.author}
                           </span>
                           {post.authorRole && (
-                            <span className="text-[11px] font-medium text-[#7C4D2B] bg-[#FAF6F0] px-2 py-0.5 rounded-full border border-[#E6DEC8]/80">
+                            <span className="text-[11px] font-medium text-[#606E5A] bg-[#F6F2EB] px-2 py-0.5 rounded-full border border-[#D6BD95]/80">
                               {post.authorRole}
                             </span>
                           )}
-                          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#FAF6F0] border border-[#E6DEC8] text-[#6E6259] inline-flex items-center gap-1">
+                          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F6F2EB] border border-[#D6BD95] text-[#748067] inline-flex items-center gap-1">
                             {post.visibility === 'Công khai' && <Globe className="w-3 h-3" />}
                             {post.visibility === 'Chỉ mình tôi' && <Lock className="w-3 h-3" />}
                             {post.visibility === 'Khóa đến ngày kỷ niệm' && (
@@ -646,9 +664,9 @@ export default function ScreenFeed({
                             {post.visibility}
                           </span>
                         </div>
-                        <div className="text-xs text-[#6E6259] mt-0.5">
+                        <div className="text-xs text-[#748067] mt-0.5">
                           {post.createdAt} • Kỷ niệm:{' '}
-                          <span className="font-medium text-[#7C4D2B]">{post.memoryDate}</span>
+                          <span className="font-medium text-[#606E5A]">{post.memoryDate}</span>
                         </div>
                       </div>
                     </div>
@@ -656,14 +674,14 @@ export default function ScreenFeed({
 
                   {/* Verified Physical Box Badge */}
                   {post.verifiedBox && (
-                    <div className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#3B7A57]/10 border border-[#3B7A57]/30 text-xs font-semibold text-[#3B7A57]">
+                    <div className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#606E5A]/10 border border-[#606E5A]/30 text-xs font-semibold text-[#606E5A]">
                       <ShieldCheck className="w-4 h-4 shrink-0" />
                       <span>{post.verifiedBox.label}</span>
                     </div>
                   )}
 
                   {/* Story Content */}
-                  <p className="mt-3.5 text-sm text-[#2C2523] leading-relaxed whitespace-pre-line">
+                  <p className="mt-3.5 text-sm text-[#2C3329] leading-relaxed whitespace-pre-line">
                     {post.content}
                   </p>
 
@@ -672,7 +690,7 @@ export default function ScreenFeed({
                     {(post.hashtags || []).map((tag) => (
                       <span
                         key={tag}
-                        className="text-xs font-medium text-[#7C4D2B] bg-[#FAF6F0] px-2.5 py-0.5 rounded-full border border-[#E6DEC8]/70"
+                        className="text-xs font-medium text-[#606E5A] bg-[#F6F2EB] px-2.5 py-0.5 rounded-full border border-[#D6BD95]/70"
                       >
                         {tag}
                       </span>
@@ -681,7 +699,7 @@ export default function ScreenFeed({
 
                   {/* Image */}
                   {post.image && (
-                    <div className="mt-4 rounded-2xl overflow-hidden border border-[#E6DEC8] shadow-sm">
+                    <div className="mt-4 rounded-2xl overflow-hidden border border-[#D6BD95] shadow-sm">
                       <SafeImage
                         src={post.image}
                         alt="Hình ảnh kỷ niệm"
@@ -696,20 +714,20 @@ export default function ScreenFeed({
                   )}
 
                   {/* Interactive Action Bar */}
-                  <div className="mt-4 pt-3.5 border-t border-[#E6DEC8]/70 flex flex-wrap items-center justify-between gap-2">
+                  <div className="mt-4 pt-3.5 border-t border-[#D6BD95]/70 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-2">
                       {/* Candle Reaction */}
                       <button
                         onClick={() => handleToggleCandle(post.id)}
                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border ${
                           post.candledByMe
-                            ? 'bg-[#E5A93C]/25 border-[#E5A93C] text-[#7C4D2B] shadow-sm'
-                            : 'bg-[#FAF6F0] border-[#E6DEC8] text-[#6E6259] hover:border-[#E5A93C] hover:text-[#7C4D2B]'
+                            ? 'bg-[#C9A166]/25 border-[#C9A166] text-[#606E5A] shadow-sm'
+                            : 'bg-[#F6F2EB] border-[#D6BD95] text-[#748067] hover:border-[#C9A166] hover:text-[#606E5A]'
                         }`}
                       >
                         <Flame
                           className={`w-4 h-4 ${
-                            post.candledByMe ? 'text-[#D96B43] fill-[#E5A93C]' : ''
+                            post.candledByMe ? 'text-[#C9A166] fill-[#C9A166]' : ''
                           }`}
                         />
                         <span>Thắp nến đồng cảm ({post.candles || 0})</span>
@@ -723,7 +741,7 @@ export default function ScreenFeed({
                             [post.id]: !openComments[post.id],
                           })
                         }
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#FAF6F0] border border-[#E6DEC8] text-[#6E6259] hover:border-[#7C4D2B] hover:text-[#7C4D2B] transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#F6F2EB] border border-[#D6BD95] text-[#748067] hover:border-[#606E5A] hover:text-[#606E5A] transition-colors"
                       >
                         <MessageCircle className="w-4 h-4" />
                         <span>Gửi lời nhắn ({(post.comments || []).length})</span>
@@ -734,7 +752,7 @@ export default function ScreenFeed({
                         onClick={() =>
                           showToast('Đã thêm vào danh sách nhắc lại sau 1 năm')
                         }
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#FAF6F0] border border-[#E6DEC8] text-[#6E6259] hover:border-[#D96B43] hover:text-[#D96B43] transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#F6F2EB] border border-[#D6BD95] text-[#748067] hover:border-[#C9A166] hover:text-[#C9A166] transition-colors"
                       >
                         <BellRing className="w-4 h-4" />
                         <span>Nhắc tôi nhớ lại</span>
@@ -744,7 +762,7 @@ export default function ScreenFeed({
                     {/* QR Postcard */}
                     <button
                       onClick={() => setPostcardPost(post)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#7C4D2B]/10 text-[#7C4D2B] hover:bg-[#7C4D2B] hover:text-white transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#606E5A]/10 text-[#606E5A] hover:bg-[#606E5A] hover:text-white transition-colors"
                     >
                       <QrCode className="w-4 h-4" />
                       <span>Tạo Bưu Thiếp QR</span>
@@ -753,19 +771,19 @@ export default function ScreenFeed({
 
                   {/* Expandable Comments Section */}
                   {openComments[post.id] && (
-                    <div className="mt-4 pt-3 border-t border-[#E6DEC8]/60 space-y-3">
+                    <div className="mt-4 pt-3 border-t border-[#D6BD95]/60 space-y-3">
                       {(post.comments || []).length > 0 && (
                         <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
                           {(post.comments || []).map((c) => (
                             <div
                               key={c.id}
-                              className="p-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]/60 text-xs"
+                              className="p-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]/60 text-xs"
                             >
                               <div className="flex items-center justify-between mb-1">
-                                <span className="font-semibold text-[#7C4D2B]">{c.author}</span>
-                                <span className="text-[10px] text-[#6E6259]">{c.time}</span>
+                                <span className="font-semibold text-[#606E5A]">{c.author}</span>
+                                <span className="text-[10px] text-[#748067]">{c.time}</span>
                               </div>
-                              <p className="text-[#2C2523]">{c.text}</p>
+                              <p className="text-[#2C3329]">{c.text}</p>
                             </div>
                           ))}
                         </div>
@@ -779,11 +797,11 @@ export default function ScreenFeed({
                           }
                           onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
                           placeholder={`Bình luận dưới tên ${user?.name || 'Thành viên'}...`}
-                          className="flex-1 px-3.5 py-2 rounded-full bg-[#FAF6F0] border border-[#E6DEC8] text-xs focus:outline-none focus:border-[#D96B43]"
+                          className="flex-1 px-3.5 py-2 rounded-full bg-[#F6F2EB] border border-[#D6BD95] text-xs focus:outline-none focus:border-[#C9A166]"
                         />
                         <button
                           onClick={() => handleAddComment(post.id)}
-                          className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-semibold"
+                          className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-semibold"
                         >
                           <Send className="w-3.5 h-3.5" />
                           <span>Gửi</span>
@@ -799,8 +817,64 @@ export default function ScreenFeed({
 
         {/* Right 30% Utility Column */}
         <div className="lg:col-span-4 space-y-5">
+          {/* Moclant Magnolia Brand Identity & Color Story Card */}
+          <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm space-y-3.5">
+            <div className="flex items-center gap-3">
+              <img
+                src="/moclant-logo.jpg"
+                alt="Logo Moclant Hoa Mộc Lan"
+                className="w-16 h-16 rounded-2xl object-contain bg-[#F6F2EB] p-1 border border-[#D6BD95] shrink-0"
+              />
+              <div>
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EAE1D4] text-[#606E5A]">
+                  <Sparkles className="w-3 h-3 text-[#C9A166]" /> Biểu tượng thương hiệu
+                </span>
+                <h3 className="font-serif text-lg font-bold text-[#606E5A] mt-0.5">
+                  Moclant — Hoa Mộc Lan
+                </h3>
+                <p className="text-[11px] text-[#748067]">
+                  Thanh khiết • Trường tồn • Sang trọng
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-[#2C3329] leading-relaxed bg-[#F6F2EB] p-3 rounded-xl border border-[#D6BD95]/60">
+              Đóa <strong>Hoa Mộc Lan (Moclant)</strong> mang sắc trắng kem nhẹ nhàng ôm lấy nhụy vàng Champagne và cành lá xanh Olive, biểu trưng cho những ký ức được bảo vệ nguyên vẹn qua năm tháng.
+            </p>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#748067] mb-2">
+                Bảng màu nhận diện Moclant:
+              </div>
+              <div className="grid grid-cols-3 gap-1.5 text-[10px]">
+                <div className="p-1.5 rounded-lg bg-[#606E5A] text-white font-semibold text-center shadow-sm">
+                  #606E5A
+                  <div className="text-[9px] opacity-85 font-normal">Olive Green</div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-[#C9A166] text-white font-semibold text-center shadow-sm">
+                  #C9A166
+                  <div className="text-[9px] opacity-90 font-normal">Champagne</div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-[#748067] text-white font-semibold text-center shadow-sm">
+                  #748067
+                  <div className="text-[9px] opacity-85 font-normal">Sage Green</div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-[#F6F2EB] text-[#606E5A] border border-[#D6BD95] font-semibold text-center">
+                  #F6F2EB
+                  <div className="text-[9px] opacity-80 font-normal">Warm Ivory</div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-[#EAE1D4] text-[#606E5A] border border-[#D6BD95] font-semibold text-center">
+                  #EAE1D4
+                  <div className="text-[9px] opacity-80 font-normal">Soft Beige</div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-[#D6BD95] text-[#2C3329] font-semibold text-center">
+                  #D6BD95
+                  <div className="text-[9px] opacity-85 font-normal">Muted Gold</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Account Profile & Avatar Edit Card */}
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm">
             <div className="flex items-center gap-3.5">
               <button
                 type="button"
@@ -811,21 +885,21 @@ export default function ScreenFeed({
                 <SafeImage
                   src={user.avatar}
                   alt={user.name}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-[#E5A93C]"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#C9A166]"
                 />
-                <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-[#D96B43] text-white flex items-center justify-center shadow">
+                <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-[#C9A166] text-white flex items-center justify-center shadow">
                   <Camera className="w-3 h-3" />
                 </span>
               </button>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-bold text-[#2C2523] truncate">{user.name}</div>
-                <div className="text-xs text-[#6E6259] truncate">
+                <div className="text-sm font-bold text-[#2C3329] truncate">{user.name}</div>
+                <div className="text-xs text-[#748067] truncate">
                   {user.bio || 'Người lưu giữ khoảnh khắc'}
                 </div>
                 <button
                   type="button"
                   onClick={onEditProfile}
-                  className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-[#D96B43] hover:underline"
+                  className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-[#C9A166] hover:underline"
                 >
                   <Camera className="w-3 h-3" />
                   <span>Đổi ảnh đại diện & hồ sơ</span>
@@ -833,16 +907,16 @@ export default function ScreenFeed({
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#E6DEC8] grid grid-cols-2 gap-2 text-center">
-              <div className="p-2 rounded-xl bg-[#FAF6F0]">
-                <div className="text-[10px] text-[#6E6259]">Hộp đang gửi</div>
-                <div className="font-serif text-base font-bold text-[#7C4D2B]">
+            <div className="mt-4 pt-3 border-t border-[#D6BD95] grid grid-cols-2 gap-2 text-center">
+              <div className="p-2 rounded-xl bg-[#F6F2EB]">
+                <div className="text-[10px] text-[#748067]">Hộp đang gửi</div>
+                <div className="font-serif text-base font-bold text-[#606E5A]">
                   {vaultItems.length} Hộp
                 </div>
               </div>
-              <div className="p-2 rounded-xl bg-[#FAF6F0]">
-                <div className="text-[10px] text-[#6E6259]">Gói hiện tại</div>
-                <div className="text-xs font-bold text-[#D96B43] truncate">
+              <div className="p-2 rounded-xl bg-[#F6F2EB]">
+                <div className="text-[10px] text-[#748067]">Gói hiện tại</div>
+                <div className="text-xs font-bold text-[#C9A166] truncate">
                   {user.tierName}
                 </div>
               </div>
@@ -850,9 +924,9 @@ export default function ScreenFeed({
           </div>
 
           {/* Community Memory Keepers Widget */}
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
-            <div className="flex items-center gap-2 text-[#7C4D2B] font-semibold text-xs uppercase tracking-wider mb-3">
-              <Users className="w-4 h-4 text-[#D96B43]" />
+          <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm">
+            <div className="flex items-center gap-2 text-[#606E5A] font-semibold text-xs uppercase tracking-wider mb-3">
+              <Users className="w-4 h-4 text-[#C9A166]" />
               <span>Cộng Đồng Người Giữ Ký Ức</span>
             </div>
             <div className="space-y-3">
@@ -884,22 +958,22 @@ export default function ScreenFeed({
               ].map((member) => (
                 <div
                   key={member.name}
-                  className="flex items-center justify-between gap-2.5 p-2 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]/60"
+                  className="flex items-center justify-between gap-2.5 p-2 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]/60"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <SafeImage
                       src={member.avatar}
                       alt={member.name}
-                      className="w-9 h-9 rounded-full object-cover border border-[#E6DEC8] shrink-0"
+                      className="w-9 h-9 rounded-full object-cover border border-[#D6BD95] shrink-0"
                     />
                     <div className="min-w-0">
-                      <div className="text-xs font-bold text-[#2C2523] truncate">
+                      <div className="text-xs font-bold text-[#2C3329] truncate">
                         {member.name}
                       </div>
-                      <div className="text-[10px] text-[#6E6259] truncate">{member.role}</div>
+                      <div className="text-[10px] text-[#748067] truncate">{member.role}</div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E5A93C]/20 text-[#7C4D2B] shrink-0">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#C9A166]/20 text-[#606E5A] shrink-0">
                     🔥 {member.badge}
                   </span>
                 </div>
@@ -908,29 +982,29 @@ export default function ScreenFeed({
           </div>
 
           {/* On This Day */}
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
-            <div className="flex items-center gap-2 text-[#D96B43] font-semibold text-xs uppercase tracking-wider mb-2">
+          <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm">
+            <div className="flex items-center gap-2 text-[#C9A166] font-semibold text-xs uppercase tracking-wider mb-2">
               <CalendarHeart className="w-4 h-4" />
               <span>Ký ức ngày này năm xưa</span>
             </div>
-            <h3 className="font-serif text-lg font-bold text-[#2C2523] mb-2">
+            <h3 className="font-serif text-lg font-bold text-[#2C3329] mb-2">
               17/11/2023 — Chiều mưa ở ga Hà Nội
             </h3>
-            <p className="text-xs text-[#6E6259] leading-relaxed mb-3">
+            <p className="text-xs text-[#748067] leading-relaxed mb-3">
               3 năm trước, một mảnh ký ức về tấm vé tàu SE1 và chiếc hộp nhạc gỗ đã được niêm phong tại Kho Trung Tâm.
             </p>
             <button
               onClick={() => onNavigate('vault')}
-              className="w-full py-2 rounded-xl bg-[#FAF6F0] hover:bg-[#F3E9D8] border border-[#E6DEC8] text-xs font-semibold text-[#7C4D2B] transition-colors"
+              className="w-full py-2 rounded-xl bg-[#F6F2EB] hover:bg-[#EAE1D4] border border-[#D6BD95] text-xs font-semibold text-[#606E5A] transition-colors"
             >
               Mở lại không gian số
             </button>
           </div>
 
           {/* Trending Topics */}
-          <div className="bg-white border border-[#E6DEC8] rounded-2xl p-5 shadow-warm">
-            <div className="flex items-center gap-2 text-[#7C4D2B] font-semibold text-xs uppercase tracking-wider mb-3">
-              <TrendingUp className="w-4 h-4 text-[#E5A93C]" />
+          <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm">
+            <div className="flex items-center gap-2 text-[#606E5A] font-semibold text-xs uppercase tracking-wider mb-3">
+              <TrendingUp className="w-4 h-4 text-[#C9A166]" />
               <span>Chủ đề đang được đồng cảm</span>
             </div>
             <div className="space-y-2.5">
@@ -942,10 +1016,10 @@ export default function ScreenFeed({
               ].map((topic) => (
                 <div
                   key={topic.tag}
-                  className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF6F0] border border-[#E6DEC8]/60"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-[#F6F2EB] border border-[#D6BD95]/60"
                 >
-                  <span className="text-xs font-semibold text-[#7C4D2B]">{topic.tag}</span>
-                  <span className="text-[11px] text-[#6E6259]">{topic.count}</span>
+                  <span className="text-xs font-semibold text-[#606E5A]">{topic.tag}</span>
+                  <span className="text-[11px] text-[#748067]">{topic.count}</span>
                 </div>
               ))}
             </div>
@@ -955,43 +1029,43 @@ export default function ScreenFeed({
 
       {/* Vintage Postcard QR Modal */}
       {postcardPost && (
-        <div className="fixed inset-0 z-50 bg-[#2C2523]/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#FAF6F0] border-2 border-[#7C4D2B] rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#2C3329]/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#F6F2EB] border-2 border-[#606E5A] rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
             <button
               onClick={() => setPostcardPost(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white border border-[#E6DEC8] flex items-center justify-center text-[#6E6259] hover:text-[#2C2523]"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white border border-[#D6BD95] flex items-center justify-center text-[#748067] hover:text-[#2C3329]"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="border border-dashed border-[#7C4D2B]/40 rounded-xl p-5 bg-white">
-              <div className="flex items-center justify-between border-b border-[#E6DEC8] pb-3 mb-4">
+            <div className="border border-dashed border-[#606E5A]/40 rounded-xl p-5 bg-white">
+              <div className="flex items-center justify-between border-b border-[#D6BD95] pb-3 mb-4">
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-[#D96B43] font-bold">
+                  <div className="text-[10px] uppercase tracking-widest text-[#C9A166] font-bold">
                     Bưu Thiếp Ký Ức Phygital
                   </div>
-                  <h4 className="font-serif text-xl font-bold text-[#2C2523]">
+                  <h4 className="font-serif text-xl font-bold text-[#2C3329]">
                     Cửa Hàng Ký Ức
                   </h4>
                 </div>
-                <div className="w-12 h-14 border-2 border-[#7C4D2B]/40 rounded flex flex-col items-center justify-center text-[9px] font-bold text-[#7C4D2B] bg-[#FAF6F0]">
-                  <Sparkles className="w-4 h-4 text-[#E5A93C] mb-0.5" />
+                <div className="w-12 h-14 border-2 border-[#606E5A]/40 rounded flex flex-col items-center justify-center text-[9px] font-bold text-[#606E5A] bg-[#F6F2EB]">
+                  <Sparkles className="w-4 h-4 text-[#C9A166] mb-0.5" />
                   TEM KÝ ỨC
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <div className="flex-1">
-                  <p className="font-serif italic text-sm text-[#2C2523] leading-relaxed line-clamp-5">
+                  <p className="font-serif italic text-sm text-[#2C3329] leading-relaxed line-clamp-5">
                     “{postcardPost.content}”
                   </p>
-                  <div className="mt-3 text-xs font-semibold text-[#7C4D2B]">
+                  <div className="mt-3 text-xs font-semibold text-[#606E5A]">
                     — {postcardPost.author} ({postcardPost.memoryDate})
                   </div>
                 </div>
                 <div className="shrink-0 flex flex-col items-center">
                   <QrCodeSvg value={postcardPost.id} size={110} />
-                  <span className="text-[10px] text-[#6E6259] mt-1.5">
+                  <span className="text-[10px] text-[#748067] mt-1.5">
                     Quét QR để nghe & xem kỷ niệm
                   </span>
                 </div>
@@ -1001,13 +1075,13 @@ export default function ScreenFeed({
             <div className="mt-5 flex items-center justify-end gap-3">
               <button
                 onClick={() => setPostcardPost(null)}
-                className="px-4 py-2 rounded-full border border-[#E6DEC8] bg-white text-xs font-semibold text-[#6E6259]"
+                className="px-4 py-2 rounded-full border border-[#D6BD95] bg-white text-xs font-semibold text-[#748067]"
               >
                 Đóng
               </button>
               <button
                 onClick={() => handleDownloadPostcard(postcardPost)}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#D96B43] hover:bg-[#B84A24] text-white text-xs font-semibold shadow"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#C9A166] hover:bg-[#B38B50] text-white text-xs font-semibold shadow"
               >
                 <Download className="w-4 h-4" />
                 <span>Tải thiệp về máy</span>

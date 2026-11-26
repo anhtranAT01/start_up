@@ -87,6 +87,10 @@ export const INITIAL_USER = INITIAL_ACCOUNTS[0];
 
 export const SAMPLE_IMAGES = [
   {
+    label: 'Logo Hoa Mộc Lan Moclant',
+    url: '/moclant-logo.jpg',
+  },
+  {
     label: 'Hộp gỗ kỷ niệm & thư tay',
     url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80',
   },
@@ -121,6 +125,45 @@ export const SAMPLE_IMAGES = [
 ];
 
 export const INITIAL_VAULT_ITEMS = [
+  {
+    id: 'MK-8899',
+    ownerEmail: 'minhanh.kyuc@gmail.com',
+    ownerName: 'Minh Anh',
+    name: 'Rương Gỗ Moclant Khắc Dấu Hoa Mộc Lan & Thẻ NFC Vàng Champagne',
+    category: 'Bộ sưu tập Moclant Signature',
+    size: 'Hộp Vừa (35x25x15cm)',
+    boxType: 'Hộp Gỗ Tuyết Tùng chống ẩm',
+    status: 'stored',
+    statusLabel: 'Đang lưu tại kho',
+    location: 'Kho Trung Tâm Hà Nội - Khu A (Phòng Moclant) - Kệ 01 - Ngăn 01',
+    sentDate: '26/11/2026',
+    expiryDate: '26/11/2036',
+    durationLabel: '10 năm',
+    sensorTemp: '21.6°C',
+    sensorHumidity: '43%',
+    insuranceValue: 10000000,
+    hasNfc: true,
+    isTimeCapsule: false,
+    lastInspected: 'Vừa kiểm định',
+    coverImage: '/moclant-logo.jpg',
+    story: 'Phiên bản rương kỷ vật đặc biệt khắc nổi biểu tượng Hoa Mộc Lan Moclant bằng vàng Champagne (#C9A166) trên nền lá xanh Olive (#606E5A), lưu giữ cành mộc lan ép khô và thư tay.',
+    digitalSpace: {
+      audioTitle: 'Giai điệu Mộc Lan Mùa Xuân — Bản thu piano mộc.mp3',
+      audioDuration: '02:10',
+      durationSeconds: 130,
+      letter: 'Mỗi cánh hoa mộc lan trắng kem của Moclant là một lời hứa gìn giữ ký ức thanh khiết, bền bỉ trước thời gian. Dù 10 hay 20 năm nữa, chỉ cần chạm nhẹ thẻ NFC hoa mộc lan này, mọi thanh âm sẽ lại nở rộ như thuở ban đầu.',
+      photos: [
+        '/moclant-logo.jpg',
+        'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80',
+      ],
+      notes: [
+        { date: '26/11/2026', text: 'Niêm phong sáp vàng Champagne khắc dấu Hoa Mộc Lan Moclant #MC-001.' },
+      ],
+      inspectionLogs: [
+        { date: '26/11/2026 - 10:00', status: 'Đạt chuẩn 100% — Dấu sáp Hoa Mộc Lan nguyên vẹn, hương gỗ tuyết tùng dịu nhẹ.' },
+      ],
+    },
+  },
   {
     id: 'MK-1024',
     ownerEmail: 'minhanh.kyuc@gmail.com',
@@ -275,6 +318,114 @@ export const INITIAL_VAULT_ITEMS = [
 ];
 
 export const INITIAL_POSTS = [
+  {
+    id: 'post-moclant-1',
+    authorEmail: 'minhanh.kyuc@gmail.com',
+    author: 'Moclant • Cửa Hàng Ký Ức',
+    authorRole: 'Câu chuyện Thương hiệu & Biểu tượng Hoa Mộc Lan',
+    avatar: '/moclant-logo.jpg',
+    isAnonymous: false,
+    visibility: 'Công khai',
+    createdAt: 'Vừa xong',
+    memoryDate: 'Tháng 11, 2026',
+    category: 'physical',
+    isTrending: true,
+    verifiedBox: {
+      id: 'MK-8899',
+      label: '✓ Biểu tượng chính thức Moclant • Hoa Mộc Lan Lưu Giữ Thời Gian (#MK-8899)',
+    },
+    hashtags: ['#Moclant', '#HoaMocLan', '#BieuTuongKyUc', '#OliveGreen', '#ChampagneGold'],
+    content:
+      'Vì sao chúng mình chọn đóa Hoa Mộc Lan (Magnolia) làm biểu tượng linh hồn cho Moclant — Cửa Hàng Ký Ức?\n\nHoa mộc lan là một trong những loài hoa cổ xưa nhất trên Trái Đất, kiên cường nở rộ giữa tiết trời giao mùa se lạnh. Trong logo của Moclant, từng cánh hoa trắng kem ấm áp (#F6F2EB) ôm lấy nhụy vàng Champagne (#C9A166) tượng trưng cho những mảnh ký ức quý giá được nâng niu. Nhánh lá xanh Olive (#606E5A) và xanh Sage (#748067) vươn lên mềm mại chính là lời cam kết bảo quản bền bỉ, để năm tháng có đi qua thì kỷ vật của bạn vẫn thanh khiết và vẹn nguyên như thuở ban đầu.',
+    image: '/moclant-logo.jpg',
+    audio: {
+      title: 'Tâm sự ngày ra mắt biểu tượng Hoa Mộc Lan Moclant.mp3',
+      durationSeconds: 120,
+    },
+    candles: 684,
+    candledByMe: true,
+    comments: [
+      {
+        id: 'cm-1',
+        author: 'Đức Minh (KTS)',
+        text: 'Dưới góc nhìn kiến trúc và mỹ thuật, phối màu Xanh Olive (#606E5A) đi cùng Vàng Champagne (#C9A166) và nền Trắng Kem của logo Moclant sang trọng, tĩnh tại và có chiều sâu hoài niệm thực sự!',
+        time: '15 phút trước',
+      },
+      {
+        id: 'cm-2',
+        author: 'Thảo Nhi',
+        text: 'Nhìn cánh hoa mộc lan bung nở nhẹ nhàng trên nền kem mà thấy bình yên lạ kỳ. Một diện mạo quá tinh tế cho những người yêu ký ức!',
+        time: '8 phút trước',
+      },
+    ],
+  },
+  {
+    id: 'post-moclant-2',
+    authorEmail: 'thaonhi@gmail.com',
+    author: 'Thảo Nhi',
+    authorRole: 'Nhiếp ảnh gia Tự do • Yêu Hoa Mộc Lan',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80',
+    isAnonymous: false,
+    visibility: 'Công khai',
+    createdAt: '18 phút trước',
+    memoryDate: 'Mùa thu - đông, 2026',
+    category: 'physical',
+    isTrending: true,
+    verifiedBox: {
+      id: 'MK-8899',
+      label: '✓ Kỷ vật thật khắc dấu Hoa Mộc Lan tại Khu A - Mã #MK-8899',
+    },
+    hashtags: ['#Moclant', '#DauSapHoaMocLan', '#TheNFCVangChampagne', '#GoiGhemKhoanhKhac'],
+    content:
+      'Hôm nay vừa nhận được chiếc thẻ chạm NFC phiên bản mới của Moclant có in hình đóa hoa mộc lan cánh trắng nhụy vàng Champagne trên nền hộp gỗ xanh Olive trầm ấm. Lúc nhân viên đến nhà niêm phong hộp kỷ vật, chiếc dấu sáp đóng hình bông hoa mộc lan Moclant lên dải ruy băng lụa nhìn chẳng khác nào một tác phẩm nghệ thuật cổ điển. Chạm nhẹ điện thoại vào đóa mộc lan là cả album ảnh và giọng nói năm xưa hiện về ngay trước mắt.',
+    image: '/moclant-logo.jpg',
+    audio: {
+      title: 'Khúc nhạc chiều thu bên tách trà hoa mộc lan.mp3',
+      durationSeconds: 95,
+    },
+    candles: 412,
+    candledByMe: true,
+    comments: [
+      {
+        id: 'cm-21',
+        author: 'Minh Anh',
+        text: 'Chiếc thẻ NFC in logo Moclant để trong ví xinh xỉu luôn chị Nhi ạ, ai nhìn cũng hỏi thăm!',
+        time: '10 phút trước',
+      },
+    ],
+  },
+  {
+    id: 'post-moclant-3',
+    authorEmail: 'ducminh@gmail.com',
+    author: 'Đức Minh (KTS)',
+    authorRole: 'Kiến trúc sư • Gói Di Sản Vĩnh Cửu',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    isAnonymous: false,
+    visibility: 'Khóa đến ngày kỷ niệm',
+    createdAt: '25 phút trước',
+    memoryDate: 'Mùa hoa mộc lan nở, 2026 -> 2036',
+    category: 'future',
+    isTrending: true,
+    verifiedBox: {
+      id: 'MK-8899',
+      label: '✓ Đang bảo quản lạnh tại Phòng Moclant VIP - Mã #MK-8899',
+    },
+    hashtags: ['#HoaMocLan', '#MoclantStory', '#ThuGui10NamSau', '#DiSanThanhKhiet'],
+    content:
+      'Trong ngôn ngữ của các loài hoa, Hoa Mộc Lan (Moclant) mang ý nghĩa của phẩm giá cao quý, tình yêu thiên nhiên và những hồi ức không bao giờ tàn phai. Mình đã ép khô một cánh hoa mộc lan đầu mùa trong cuốn sổ phác thảo kiến trúc, đặt vào rương gỗ Moclant để khóa lại suốt 10 năm tới. Hy vọng năm 2036 khi mở chiếc hộp mang biểu tượng đóa mộc lan này ra, lòng mình vẫn giữ nguyên sự tĩnh tại như sắc xanh Olive và ánh vàng Champagne hôm nay.',
+    image: '/moclant-logo.jpg',
+    audio: null,
+    candles: 356,
+    candledByMe: false,
+    comments: [
+      {
+        id: 'cm-31',
+        author: 'Mẹ Khánh Vy & Bé Sữa',
+        text: 'Bài viết thơ và ý nghĩa quá anh Minh ơi! Hoa mộc lan đúng là biểu tượng hoàn hảo cho sự trường tồn của ký ức.',
+        time: '12 phút trước',
+      },
+    ],
+  },
   {
     id: 'post-1',
     authorEmail: 'minhanh.kyuc@gmail.com',
