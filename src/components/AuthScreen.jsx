@@ -137,30 +137,20 @@ export default function AuthScreen({
           <div className="absolute -bottom-24 -right-24 w-64 h-64 rounded-full bg-[#D6BD95]/20 blur-3xl pointer-events-none" />
 
           <div className="relative z-10">
-            {/* Official Moclant Magnolia Logo Card */}
-            <div className="inline-flex items-center gap-3.5 mb-6 bg-white/95 text-[#606E5A] p-2.5 pr-4 rounded-2xl shadow-lg border border-[#D6BD95]">
+            {/* Official Moclant Logo */}
+            <div className="inline-flex items-center gap-3 mb-6 bg-white/95 text-[#606E5A] p-2.5 pr-4 rounded-2xl shadow-lg border border-[#D6BD95]">
               <img
                 src="/moclant-logo.jpg"
-                alt="Moclant — Hoa Mộc Lan"
+                alt="Moclant"
                 className="w-14 h-14 rounded-xl object-contain bg-white border border-[#EAE1D4]"
               />
-              <div>
-                <div className="font-serif text-xl font-bold tracking-wide text-[#606E5A]">
-                  Moclant
-                </div>
-                <div className="text-[11px] font-semibold text-[#748067]">
-                  CỬA HÀNG KÝ ỨC • HOA MỘC LAN
-                </div>
+              <div className="font-serif text-xl font-bold tracking-wide text-[#606E5A]">
+                Moclant
               </div>
             </div>
 
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-snug text-white">
-              “Hương mộc lan lưu giữ thời gian, <br />
-              <span className="text-[#D6BD95]">Chạm để quay về.”</span>
-            </h1>
-
-            <p className="mt-4 text-xs sm:text-sm text-[#EAE1D4]/90 leading-relaxed">
-              Nền tảng lưu trữ kỷ vật vật lý chuẩn bảo tàng mang biểu tượng Hoa Mộc Lan thanh khiết, kết hợp không gian ký ức số NFC & mạng xã hội hoài niệm.
+            <p className="mt-2 text-xs sm:text-sm text-[#EAE1D4]/90 leading-relaxed">
+              Nền tảng lưu trữ kỷ vật vật lý chuẩn bảo tàng kết hợp không gian ký ức số NFC & mạng xã hội hoài niệm.
             </p>
 
             <div className="mt-6 space-y-3 text-xs">

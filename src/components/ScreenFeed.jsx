@@ -29,7 +29,6 @@ import { SafeImage, QrCodeSvg, AudioPlayer } from './SharedUI';
 
 const FILTER_TABS = [
   { id: 'all', label: 'Tất cả ký ức' },
-  { id: 'moclant', label: '✿ Hoa Mộc Lan Moclant' },
   { id: 'physical', label: 'Có kỷ vật thật tại kho' },
   { id: 'future', label: 'Thư gửi tương lai' },
   { id: 'anonymous', label: 'Góc ẩn danh' },
@@ -285,15 +284,11 @@ export default function ScreenFeed({
               />
             </div>
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-[#D6BD95]/40 text-xs text-[#EAE1D4] font-semibold mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-[#C9A166]" />
-                <span>Moclant • Biểu tượng Hoa Mộc Lan thanh khiết • Tài khoản: {user.name}</span>
-              </div>
               <h1 className="font-serif text-2xl sm:text-3xl font-bold leading-tight text-white">
-                Moclant — Nơi đóa Hoa Mộc Lan ấp ủ những ký ức vượt thời gian
+                Moclant — Cửa Hàng Ký Ức
               </h1>
               <p className="text-xs sm:text-sm text-[#EAE1D4]/90 mt-1 max-w-2xl">
-                Lấy cảm hứng từ vẻ đẹp thanh cao, bền bỉ của loài Hoa Mộc Lan, Moclant trân trọng đồng hành cùng bạn gìn giữ trọn vẹn từng kỷ vật và câu chuyện quý giá qua năm tháng.
+                Không gian lưu giữ kỷ vật và chia sẻ câu chuyện của {user.name}.
               </p>
             </div>
           </div>
@@ -686,16 +681,18 @@ export default function ScreenFeed({
                   </p>
 
                   {/* Hashtags */}
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {(post.hashtags || []).map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs font-medium text-[#606E5A] bg-[#F6F2EB] px-2.5 py-0.5 rounded-full border border-[#D6BD95]/70"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {(post.hashtags || []).length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {(post.hashtags || []).map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs font-medium text-[#606E5A] bg-[#F6F2EB] px-2.5 py-0.5 rounded-full border border-[#D6BD95]/70"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Image */}
                   {post.image && (
@@ -817,39 +814,28 @@ export default function ScreenFeed({
 
         {/* Right 30% Utility Column */}
         <div className="lg:col-span-4 space-y-5">
-          {/* Moclant Magnolia Brand Identity & Color Story Card */}
+          {/* Moclant Customer Appreciation Card */}
           <div className="bg-white border border-[#D6BD95] rounded-2xl p-5 shadow-warm space-y-3.5">
             <div className="flex items-center gap-3">
               <img
                 src="/moclant-logo.jpg"
-                alt="Logo Moclant Hoa Mộc Lan"
-                className="w-16 h-16 rounded-2xl object-contain bg-[#F6F2EB] p-1 border border-[#D6BD95] shrink-0"
+                alt="Moclant"
+                className="w-14 h-14 rounded-2xl object-contain bg-[#F6F2EB] p-1 border border-[#D6BD95] shrink-0"
               />
-              <div>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EAE1D4] text-[#606E5A]">
-                  <Sparkles className="w-3 h-3 text-[#C9A166]" /> Biểu tượng thương hiệu
-                </span>
-                <h3 className="font-serif text-lg font-bold text-[#606E5A] mt-0.5">
-                  Moclant — Hoa Mộc Lan
-                </h3>
-                <p className="text-[11px] text-[#748067]">
-                  Thanh khiết • Trường tồn • Sang trọng
-                </p>
-              </div>
+              <h3 className="font-serif text-xl font-bold text-[#606E5A]">
+                Moclant
+              </h3>
             </div>
-            <p className="text-xs text-[#2C3329] leading-relaxed bg-[#F6F2EB] p-3 rounded-xl border border-[#D6BD95]/60">
-              Đóa <strong>Hoa Mộc Lan (Moclant)</strong> mang sắc trắng kem nhẹ nhàng ôm lấy nhụy vàng Champagne và cành lá xanh Olive, biểu trưng cho những ký ức được bảo vệ nguyên vẹn qua năm tháng.
-            </p>
             <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#F6F2EB] to-[#EAE1D4]/70 border border-[#D6BD95] space-y-1.5">
               <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#606E5A]">
                 <Sparkles className="w-3.5 h-3.5 text-[#C9A166]" />
                 <span>Lời Tri Ân Gửi Tới Quý Khách Hàng</span>
               </div>
               <p className="text-xs text-[#2C3329] italic leading-relaxed">
-                “Cảm ơn bạn đã tin tưởng trao gửi những mảnh ký ức và kỷ vật vô giá của cuộc đời mình cho <strong>Moclant</strong>. Mỗi chiếc hộp được niêm phong là một câu chuyện mà chúng tôi nguyện nâng niu và gìn giữ bằng cả trái tim, như đóa hoa mộc lan luôn dịu dàng nở rộ qua năm tháng.”
+                “Cảm ơn bạn đã tin tưởng trao gửi những mảnh ký ức và kỷ vật vô giá của cuộc đời mình cho <strong>Moclant</strong>. Mỗi chiếc hộp được niêm phong là một câu chuyện mà chúng tôi nguyện nâng niu và gìn giữ bằng cả trái tim.”
               </p>
               <div className="text-[11px] font-semibold text-[#748067] text-right pt-0.5">
-                — Đội ngũ Moclant • Cửa Hàng Ký Ức
+                — Đội ngũ Moclant
               </div>
             </div>
           </div>

@@ -31,13 +31,15 @@ import {
 } from './utils/apiClient';
 import { hasSupabaseConfig } from './utils/supabaseClient';
 
-// Ensure Moclant signature magnolia posts and vault items are always merged into existing cache
+// Ensure Moclant signature magnolia posts and vault items are always merged and sanitized in existing cache
 function ensureMoclantPosts(list) {
   if (!Array.isArray(list) || list.length === 0) return INITIAL_POSTS;
   const moclantSeeds = INITIAL_POSTS.filter((p) => p.id.startsWith('post-moclant-'));
-  const existingIds = new Set(list.map((p) => p?.id));
+  const seedMap = new Map(moclantSeeds.map((p) => [p.id, p]));
+  const updatedList = list.map((p) => (p && seedMap.has(p.id) ? { ...seedMap.get(p.id), candles: p.candles ?? seedMap.get(p.id).candles, comments: p.comments ?? seedMap.get(p.id).comments } : p));
+  const existingIds = new Set(updatedList.map((p) => p?.id));
   const missingSeeds = moclantSeeds.filter((p) => !existingIds.has(p.id));
-  return missingSeeds.length > 0 ? [...missingSeeds, ...list] : list;
+  return missingSeeds.length > 0 ? [...missingSeeds, ...updatedList] : updatedList;
 }
 
 function ensureMoclantVault(list) {

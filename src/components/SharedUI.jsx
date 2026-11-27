@@ -34,38 +34,18 @@ export function MoclantLogo({ size = 'md', showText = true, lightText = false, c
       >
         <img
           src="/moclant-logo.jpg"
-          alt="Moclant — Hoa Mộc Lan Lưu Giữ Ký Ức"
+          alt="Moclant"
           className="w-full h-full object-contain p-0.5"
         />
       </div>
       {showText && (
-        <div>
-          <div className="flex items-center gap-1.5">
-            <span
-              className={`font-serif text-lg sm:text-xl font-bold tracking-tight leading-tight ${
-                lightText ? 'text-[#F6F2EB]' : 'text-[#606E5A]'
-              }`}
-            >
-              Moclant
-            </span>
-            <span
-              className={`text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border ${
-                lightText
-                  ? 'bg-white/10 text-[#D6BD95] border-[#D6BD95]/40'
-                  : 'bg-[#EAE1D4] text-[#606E5A] border-[#D6BD95]'
-              }`}
-            >
-              Cửa Hàng Ký Ức
-            </span>
-          </div>
-          <div
-            className={`text-[11px] italic ${
-              lightText ? 'text-[#EAE1D4]/90' : 'text-[#748067]'
-            }`}
-          >
-            Hương mộc lan thanh khiết • Chạm để quay về
-          </div>
-        </div>
+        <span
+          className={`font-serif text-lg sm:text-xl font-bold tracking-tight leading-tight ${
+            lightText ? 'text-[#F6F2EB]' : 'text-[#606E5A]'
+          }`}
+        >
+          Moclant
+        </span>
       )}
     </div>
   );

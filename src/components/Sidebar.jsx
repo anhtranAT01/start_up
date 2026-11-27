@@ -145,30 +145,14 @@ export default function Sidebar({
           </nav>
         </div>
 
-        {/* Moclant Magnolia Brand Card & Trust Commitment */}
+        {/* Trust Commitment Card */}
         <div className="bg-gradient-to-br from-[#606E5A] via-[#53604D] to-[#3F4A3B] text-[#F6F2EB] rounded-2xl p-4 shadow-warm relative overflow-hidden border border-[#C9A166]/40">
-          <div className="flex items-center gap-2.5 mb-2.5">
-            <img
-              src="/moclant-logo.jpg"
-              alt="Moclant Logo"
-              className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-[#D6BD95] shrink-0"
-            />
-            <div>
-              <div className="font-serif font-bold text-sm text-white leading-tight">
-                Moclant Magnolia
-              </div>
-              <div className="text-[10px] text-[#D6BD95] flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-[#C9A166]" />
-                <span>Dấu ấn Hoa Mộc Lan</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 text-[#D6BD95] font-semibold text-xs mb-1">
+          <div className="flex items-center gap-1.5 text-[#D6BD95] font-semibold text-xs mb-1.5">
             <ShieldCheck className="w-4 h-4 text-[#C9A166]" />
             <span>Cam Kết Bảo Mật Kép</span>
           </div>
           <p className="text-xs text-[#EAE1D4]/90 leading-relaxed">
-            Mọi kỷ vật đều được niêm phong dấu sáp Hoa Mộc Lan Moclant tại nhà. Kho lưu trữ đạt chuẩn nhiệt độ 22°C & chống ẩm 45%.
+            Mọi kỷ vật đều được niêm phong bảo mật tại nhà. Kho lưu trữ đạt chuẩn nhiệt độ 22°C & chống ẩm 45%.
           </p>
         </div>
       </aside>
